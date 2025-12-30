@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FartyBird</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  font-family: 'Press Start 2P', cursive;
+  touch-action: none;
+}
+
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #70c5ce;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#score-display {
+  position: absolute;
+  top: 10%;
+  font-size: 4rem;
+  color: white;
+  z-index: 10;
+}
+
+#start-screen, #game-over-screen {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  pointer-events: auto;
+}
+
+h1 {
+  font-size: 3rem;
+  margin: 0 0 20px 0;
+  color: #f4b41b;
+  text-shadow: 3px 3px 0 #000;
+}
+
+p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background: #e06020;
+  border: 2px solid white;
+  color: white;
+  padding: 15px 30px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.2rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 0 4px 0 #8a3000;
+  transition: transform 0.1s;
+}
+
+.btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #8a3000;
+}
+
+#high-score {
+  font-size: 1rem;
+  color: #ffcc00;
+  margin-top: 10px;
+}
+
+/* Character Selector */
+.character-selector {
+  margin: 15px 0;
+}
+
+.character-selector label {
+  font-size: 0.7rem;
+  color: #ffcc00;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.char-btn {
+  width: 60px;
+  height: 60px;
+  border: 3px solid #555;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.5);
+  cursor: pointer;
+  padding: 4px;
+  transition: all 0.2s;
+}
+
+.char-btn:hover {
+  border-color: #ffcc00;
+  transform: scale(1.1);
+}
+
+.char-btn.selected {
+  border-color: #f4b41b;
+  box-shadow: 0 0 10px #f4b41b;
+}
+
+.char-preview {
+  width: 100%;
+  height: 100%;
+}
+</style>
+</head>
+<body>
+<div id="game-container">
+  <canvas id="gameCanvas"></canvas>
+  <div id="ui-layer">
+    <div id="score-display" class="hidden">0</div>
+    <div id="start-screen">
+      <h1>FARTY<br>BIRD</h1>
+      <p>Tap, Click, or Space<br>to Fart & Fly!</p>
+      
+      <div class="character-selector">
+        <label>CHOOSE YOUR BIRD:</label>
+        <div class="character-grid">
+          <button class="char-btn selected" data-char="0" title="Cool Duck">
+            <canvas class="char-preview" id="char-0"></canvas>
+          </button>
+          <button class="char-btn" data-char="1" title="Beanie Bird">
+            <canvas class="char-preview" id="char-1"></canvas>
+          </button>
+          <button class="char-btn" data-char="2" title="Crying Bird">
+            <canvas class="char-preview" id="char-2"></canvas>
+          </button>
+          <button class="char-btn" data-char="3" title="Bandana Duck">
+            <canvas class="char-preview" id="char-3"></canvas>
+          </button>
+          <button class="char-btn" data-char="4" title="Fancy Bird">
+            <canvas class="char-preview" id="char-4"></canvas>
+          </button>
+          <button class="char-btn" data-char="5" title="Derpy Bird">
+            <canvas class="char-preview" id="char-5"></canvas>
+          </button>
+          <button class="char-btn" data-char="6" title="Queen Bird">
+            <canvas class="char-preview" id="char-6"></canvas>
+          </button>
+          <button class="char-btn" data-char="7" title="Chonky Bird">
+            <canvas class="char-preview" id="char-7"></canvas>
+          </button>
+        </div>
+      </div>
+      
+      <button class="btn" id="start-btn">PLAY</button>
+      <div style="margin-top: 20px; font-size: 0.6rem; color: #ffcc00; opacity: 0.9; line-height: 1.4;">
+        <span style="font-size: 0.5rem; color: #fff;">Not my Monkey anymore, but an Ape now.<br>I will always love you.</span>
+      </div>
+    </div>
+    <div id="game-over-screen" class="hidden">
+      <h1>GAME OVER</h1>
+      <div id="final-score">Score: 0</div>
+      <div id="high-score">Best: 0</div>
+      <br>
+      <button class="btn" id="restart-btn">RETRY</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * FARTYBIRD GAME ENGINE
+ * 
+ * Dedicated to Z, King of Farts 👑💨
+ * 
+ * A hilarious Flappy Bird clone where the bird flies by farting!
+ */
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// UI Elements
+const scoreEl = document.getElementById('score-display');
+const startScreen = document.getElementById('start-screen');
+const gameOverScreen = document.getElementById('game-over-screen');
+const finalScoreEl = document.getElementById('final-score');
+const highScoreEl = document.getElementById('high-score');
+const startBtn = document.getElementById('start-btn');
+const restartBtn = document.getElementById('restart-btn');
+
+// Game Constants
+let frames = 0;
+const DEGREE = Math.PI / 180;
+let GAME_SPEED = 3;
+
+// Game State
+const state = {
+  current: 0,
+  getReady: 0,
+  game: 1,
+  over: 2
+};
+
+let score = {
+  best: parseInt(localStorage.getItem('fartybird_best'), 10) || 0,
+  value: 0
+};
+
+let gameOverCalled = false;
+
+// Fart Cloud Particles
+const fartClouds = [];
+
+// Speckle color palettes for variety
+  const specklePalettes = [
+    // Brown/tan (classic)
+    [{ r: 101, g: 67, b: 33 }, { r: 189, g: 183, b: 107 }],
+    // Green/yellow (veggie)
+    [{ r: 85, g: 107, b: 47 }, { r: 154, g: 205, b: 50 }],
+    // Purple/pink (grape soda)
+    [{ r: 128, g: 0, b: 128 }, { r: 255, g: 182, b: 193 }],
+    // Orange/red (hot one)
+    [{ r: 255, g: 69, b: 0 }, { r: 255, g: 140, b: 0 }],
+    // Blue/teal (mystery)
+    [{ r: 0, g: 128, b: 128 }, { r: 135, g: 206, b: 250 }],
+    // Grey/white (silent but deadly)
+    [{ r: 105, g: 105, b: 105 }, { r: 192, g: 192, b: 192 }]
+  ];
+
+  // Cloud color options
+  const cloudColors = [
+    'rgba(139, 69, 19,',    // Brown
+    'rgba(154, 205, 50,',   // Yellow-green
+    'rgba(107, 142, 35,',   // Olive
+    'rgba(160, 82, 45,',    // Sienna
+    'rgba(128, 128, 0,',    // Olive drab
+    'rgba(85, 107, 47,',    // Dark olive green
+  ];
+
+  function spawnFartCloud() {
+    const numClouds = Math.floor(Math.random() * 3) + 3;
+    
+    // Randomize properties for this fart burst
+    const palette = specklePalettes[Math.floor(Math.random() * specklePalettes.length)];
+    const speckleDensity = 0.3 + Math.random() * 0.7; // 0.3 to 1.0 multiplier
+    const speckleSizeMin = 0.5 + Math.random() * 1.5; // 0.5 to 2
+    const speckleSizeMax = speckleSizeMin + 1 + Math.random() * 3; // adds 1-4 more
+    const cloudColor = cloudColors[Math.floor(Math.random() * cloudColors.length)];
+    
+    for (let i = 0; i < numClouds; i++) {
+      fartClouds.push({
+        x: bird.x - 15,
+        y: bird.y + 5,
+        vx: -2 - Math.random() * 2,
+        vy: 1 + Math.random() * 2,
+        size: 8 + Math.random() * 8,
+        opacity: 0.6,
+        color: cloudColor,
+        life: 0,
+        // Speckle properties
+        specklePalette: palette,
+        speckleDensity: speckleDensity,
+        speckleSizeMin: speckleSizeMin,
+        speckleSizeMax: speckleSizeMax
+    });
+  }
+}
+
+function updateFartClouds() {
+  for (let i = fartClouds.length - 1; i >= 0; i--) {
+    const cloud = fartClouds[i];
+    cloud.x += cloud.vx;
+    cloud.y += cloud.vy;
+    cloud.life += 0.02;
+    cloud.opacity = 0.6 - cloud.life;
+    
+    if (cloud.opacity <= 0) {
+      fartClouds.splice(i, 1);
+    }
+  }
+}
+
+function drawFartClouds() {
+  fartClouds.forEach(cloud => {
+      // Draw main cloud
+      ctx.fillStyle = cloud.color + cloud.opacity + ')';
+      ctx.beginPath();
+      ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw speckles inside the cloud using stored properties
+      const numSpeckles = Math.floor(cloud.size * cloud.speckleDensity);
+      for (let i = 0; i < numSpeckles; i++) {
+        // Random position within the cloud circle
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * cloud.size * 0.7;
+        const speckleX = cloud.x + Math.cos(angle) * dist;
+        const speckleY = cloud.y + Math.sin(angle) * dist;
+        const speckleSize = cloud.speckleSizeMin + Math.random() * (cloud.speckleSizeMax - cloud.speckleSizeMin);
+
+        // Use the cloud's speckle palette
+        const speckleOpacity = cloud.opacity * (0.5 + Math.random() * 0.5);
+        const colorChoice = cloud.specklePalette[Math.floor(Math.random() * cloud.specklePalette.length)];
+        ctx.fillStyle = 'rgba(' + colorChoice.r + ',' + colorChoice.g + ',' + colorChoice.b + ',' + speckleOpacity + ')';
+        ctx.beginPath();
+        ctx.arc(speckleX, speckleY, speckleSize, 0, Math.PI * 2);
+        ctx.fill();
+      }
+  });
+}
+
+const assets = {
+  bg: {
+      // Pre-generate stars once
+      stars: null,
+      initStars: function() {
+        if (this.stars) return;
+        this.stars = [];
+        for (let i = 0; i < 100; i++) {
+          this.stars.push({
+            x: Math.random() * 432,
+            y: Math.random() * 500,
+            size: Math.random() * 2 + 0.5,
+            twinkle: Math.random() * Math.PI * 2
+          });
+        }
+      },
+      draw: function() {
+        this.initStars();
+        
+        // Night sky gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#0a0a1a');    // Dark at top
+        gradient.addColorStop(0.4, '#1a1a3a');  // Deep blue
+        gradient.addColorStop(0.7, '#2d1f3d');  // Purple hint
+        gradient.addColorStop(1, '#1a1a2e');    // Dark at bottom
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw twinkling stars
+        this.stars.forEach(star => {
+          const twinkle = Math.sin(frames * 0.05 + star.twinkle) * 0.3 + 0.7;
+          ctx.globalAlpha = twinkle;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1.0;
+
+        // Draw moon
+        ctx.fillStyle = '#f5f5dc';
+        ctx.beginPath();
+        ctx.arc(canvas.width - 80, 100, 40, 0, Math.PI * 2);
+        ctx.fill();
+        // Moon craters
+        ctx.fillStyle = '#e0e0c0';
+        ctx.globalAlpha = 0.3;
+        ctx.beginPath();
+        ctx.arc(canvas.width - 90, 90, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(canvas.width - 70, 110, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(canvas.width - 95, 115, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        // Moon glow
+        const moonGlow = ctx.createRadialGradient(
+          canvas.width - 80, 100, 40,
+          canvas.width - 80, 100, 100
+        );
+        moonGlow.addColorStop(0, 'rgba(255, 255, 200, 0.2)');
+        moonGlow.addColorStop(1, 'rgba(255, 255, 200, 0)');
+        ctx.fillStyle = moonGlow;
+        ctx.beginPath();
+        ctx.arc(canvas.width - 80, 100, 100, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Distant city silhouette (background layer)
+        ctx.fillStyle = '#15152a';
+        for(let i = 0; i < canvas.width; i += 35) {
+          let h = 40 + Math.sin(i * 0.1) * 30 + Math.random() * 20;
+          ctx.fillRect(i, canvas.height - 140 - h, 30, h);
+        }
+      }
+  },
+  
+  fg: {
+    h: 112,
+    draw: function() {
+      // Sidewalk
+      ctx.fillStyle = '#3a3a3a';
+      ctx.fillRect(0, canvas.height - this.h, canvas.width, this.h);
+
+      // Curb
+      ctx.fillStyle = '#555555';
+      ctx.fillRect(0, canvas.height - this.h, canvas.width, 15);
+
+      // Street/road
+      ctx.fillStyle = '#2a2a2a';
+      ctx.fillRect(0, canvas.height - this.h + 15, canvas.width, this.h - 15);
+
+      // Road lane markings (animated yellow dashes)
+      ctx.fillStyle = '#ffcc00';
+      const stripeWidth = 40;
+      const stripeGap = 30;
+      let offset = -(frames * GAME_SPEED) % (stripeWidth + stripeGap);
+
+      for(let i = offset; i < canvas.width; i += stripeWidth + stripeGap) {
+        ctx.fillRect(i, canvas.height - this.h/2 - 3, stripeWidth, 6);
+      }
+
+      // Manhole covers
+      ctx.fillStyle = '#444444';
+      const manholeOffset = -(frames * GAME_SPEED * 0.5) % 300;
+      for(let i = manholeOffset; i < canvas.width; i += 300) {
+        ctx.beginPath();
+        ctx.arc(i + 150, canvas.height - 40, 15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#333333';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Street gutter line
+      ctx.strokeStyle = '#222222';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height - this.h + 15);
+      ctx.lineTo(canvas.width, canvas.height - this.h + 15);
+      ctx.stroke();
+
+      // Top edge line
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height - this.h);
+      ctx.lineTo(canvas.width, canvas.height - this.h);
+      ctx.stroke();
+    }
+  }
+};
+
+// Sound Controller
+let audioCtx = null;
+
+// Initialize AudioContext on first user interaction (required for mobile)
+async function initAudioContext() {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Resume if suspended (iOS requirement)
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
+    return audioCtx;
+  } catch (error) {
+    console.warn('Audio initialization failed:', error);
+    return null;
+  }
+}
+
+// Background Music - City Ambience
+  let bgMusicStarted = false;
+  let bgNoiseSource = null;
+  let bgLfoNode = null;
+  let bgGainNode = null;
+  let bgFilterNode = null;
+  let bgLfoGain = null;
+
+  function createBrownNoise() {
+    // Create a buffer size (2 seconds is usually enough for a loop)
+    const bufferSize = audioCtx.sampleRate * 2;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    // Brown noise algorithm (integrating white noise)
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      // White noise generation
+      const white = Math.random() * 2 - 1;
+
+      // Integrate to create Brown noise (1/f^2)
+      // This emphasizes low frequencies (rumble) and cuts highs (hiss)
+      lastOut = (lastOut + (0.02 * white)) / 1.02;
+
+      // Compensation to prevent clipping (roughly)
+      data[i] = lastOut * 3.5;
+    }
+    return buffer;
+  }
+
+  async function startBackgroundMusic() {
+    if (bgMusicStarted) return;
+
+    try {
+      // Initialize audio context (required for mobile)
+      await initAudioContext();
+      if (!audioCtx) return; // Audio not available
+
+      bgMusicStarted = true;
+
+      // 1. Create the Noise Source
+      bgNoiseSource = audioCtx.createBufferSource();
+      bgNoiseSource.buffer = createBrownNoise();
+      bgNoiseSource.loop = true;
+
+      // 2. Create a Lowpass Filter (The "Distance" effect)
+      bgFilterNode = audioCtx.createBiquadFilter();
+      bgFilterNode.type = 'lowpass';
+      bgFilterNode.frequency.value = 400;
+
+      // 3. Create the Main Gain (Volume)
+      bgGainNode = audioCtx.createGain();
+      bgGainNode.gain.value = 0.15; // Keep it quiet and ambient
+
+      // 4. Create an LFO (OscillatorNode) to simulate traffic waves
+      bgLfoNode = audioCtx.createOscillator();
+      bgLfoNode.type = 'sine';
+      bgLfoNode.frequency.value = 0.1;
+
+      // 5. Create an LFO Gain to control how much the volume swells
+      bgLfoGain = audioCtx.createGain();
+      bgLfoGain.gain.value = 0.05;
+
+      // CONNECTIONS
+      // LFO -> LFO Gain -> Main Gain (Modulating volume)
+      bgLfoNode.connect(bgLfoGain);
+      bgLfoGain.connect(bgGainNode.gain);
+
+      // Noise -> Filter -> Main Gain -> Speakers
+      bgNoiseSource.connect(bgFilterNode);
+      bgFilterNode.connect(bgGainNode);
+      bgGainNode.connect(audioCtx.destination);
+
+      // Start everything
+      bgNoiseSource.start();
+      bgLfoNode.start();
+    } catch (error) {
+      console.warn('Background music initialization failed:', error);
+  }
+}
+
+async function playFart() {
+  try {
+    // Initialize audio context if needed (required for mobile)
+    await initAudioContext();
+    if (!audioCtx) return; // Audio not available
+    
+      const t = audioCtx.currentTime;
+
+      // --- NODES ---
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      // Secondary Oscillator for "Rattle/Rolling" texture (FM Synthesis)
+      const rattleOsc = audioCtx.createOscillator();
+      const rattleGain = audioCtx.createGain();
+
+      // --- CONNECTIONS ---
+      // Main Chain: Osc -> Filter -> Gain -> Out
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      // FM Chain: RattleOsc -> RattleGain -> MainOsc.frequency
+      rattleOsc.connect(rattleGain);
+      rattleGain.connect(osc.frequency);
+
+      // --- PRESETS ---
+      let duration = 0.5;
+      let startFreq = 150;
+      let endFreq = 50;
+      let filterQ = 1; // Resonance
+      let rattleSpeed = 0; // Hz of the rattle
+      let rattleAmount = 0; // Depth of the rattle
+
+      // Random variance (makes it organic)
+      const r = () => Math.random() * 0.2 + 0.9;
+
+      // Randomly select fart type
+      const fartTypes = ['tight', 'dry', 'rolling', 'wet', 'sticky', 'long'];
+      const type = fartTypes[Math.floor(Math.random() * fartTypes.length)];
+
+      switch (type) {
+        case 'tight':
+          // High pitch, very short, high resonance (The Squeak)
+          osc.type = 'sawtooth';
+          duration = 0.1 * r();
+          startFreq = 400 * r();
+          endFreq = 300 * r();
+          filterQ = 15; // Very squeaky
+          break;
+
+        case 'dry':
+          // Classic sawtooth, fast drop, no rattle (The Ripper)
+          osc.type = 'sawtooth';
+          duration = 0.4 * r();
+          startFreq = 200 * r();
+          endFreq = 40;
+          filterQ = 2;
+          break;
+
+        case 'rolling':
+          // Low pitch, heavy "Rattle" modulation (The Motorboat)
+          osc.type = 'sawtooth';
+          duration = 0.8 * r();
+          startFreq = 80;
+          endFreq = 40;
+          rattleSpeed = 25; // Flaps 25 times a second
+          rattleAmount = 30; // Strong modulation
+          filterQ = 5;
+          break;
+
+        case 'wet':
+          // High Q, distinct filter sweep (The Oops)
+          osc.type = 'sawtooth';
+          duration = 0.4 * r();
+          startFreq = 180;
+          endFreq = 100;
+          filterQ = 12; // Very wet
+          rattleSpeed = 10;
+          rattleAmount = 10; // Slight bubbling
+          break;
+
+        case 'sticky':
+          // Creates a "tearing" sound using square wave (The Sticky)
+          osc.type = 'square'; // Hollow sound
+          duration = 0.6;
+          startFreq = 100;
+          endFreq = 120; // Pitch actually goes UP slightly (tension)
+          filterQ = 20; // Extreme squelch
+          break;
+
+        case 'long':
+          // Slow decay, unsteady pitch (The Long Goodbye)
+          osc.type = 'sawtooth';
+          duration = 2.0;
+          startFreq = 130;
+          endFreq = 30;
+          rattleSpeed = 6; // Slow wobble
+          rattleAmount = 15;
+          filterQ = 4;
+          break;
+      }
+
+      // --- APPLY PARAMETERS ---
+
+      // 1. Oscillator Pitch
+      osc.frequency.setValueAtTime(startFreq, t);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(1, endFreq), t + duration);
+
+      // 2. Rattle (FM) Configuration
+      if (rattleSpeed > 0) {
+        rattleOsc.type = 'sawtooth';
+        rattleOsc.frequency.value = rattleSpeed;
+        rattleGain.gain.setValueAtTime(rattleAmount, t);
+        // Fade out the rattle so it doesn't sound robotic at the end
+        rattleGain.gain.linearRampToValueAtTime(0, t + duration);
+        rattleOsc.start(t);
+        rattleOsc.stop(t + duration + 0.1);
+      }
+
+      // 3. Filter Sweep (The "Vowel" sound)
+      filter.type = 'lowpass';
+      filter.Q.value = filterQ;
+      // The filter usually starts open and closes
+      filter.frequency.setValueAtTime(800, t);
+      filter.frequency.exponentialRampToValueAtTime(50, t + duration);
+
+      // 4. Volume Envelope (ADSR)
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.5, t + 0.05); // Attack (reduced volume for game)
+      gain.gain.exponentialRampToValueAtTime(0.01, t + duration); // Decay
+
+      // --- PLAY ---
+      osc.start(t);
+      osc.stop(t + duration + 0.1);
+
+      // Cleanup
+      setTimeout(() => {
+        osc.disconnect();
+        gain.disconnect();
+        filter.disconnect();
+        rattleOsc.disconnect();
+        rattleGain.disconnect();
+      }, duration * 1000 + 200);
+
+  } catch (error) {
+    console.warn('Fart sound playback failed:', error);
+  }
+}
+
+async function playHit() {
+  try {
+    // Initialize audio context if needed (required for mobile)
+    await initAudioContext();
+    if (!audioCtx) return; // Audio not available
+    
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+  } catch (error) {
+    console.warn('Hit sound playback failed:', error);
+  }
+}
+
+// ============================================
+// CHARACTER DRAWING FUNCTIONS
+// ============================================
+
+function drawCharacter(ctx, charIndex) {
+  switch(charIndex) {
+    case 0: drawCoolDuck(ctx); break;
+    case 1: drawBeanieBird(ctx); break;
+    case 2: drawCryingBird(ctx); break;
+    case 3: drawBandanaDuck(ctx); break;
+    case 4: drawFancyBird(ctx); break;
+    case 5: drawDerpyBird(ctx); break;
+    case 6: drawQueenBird(ctx); break;
+    case 7: drawChonkyBird(ctx); break;
+    default: drawCoolDuck(ctx);
+  }
+}
+
+// Character 0: Cool Duck (Yellow with cap, shades & leather jacket)
+function drawCoolDuck(ctx) {
+  // Leather jacket (back/body)
+  ctx.fillStyle = "#1a1a1a";
+  ctx.beginPath();
+  ctx.ellipse(0, 4, 18, 15, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Jacket collar
+  ctx.fillStyle = "#2a2a2a";
+  ctx.beginPath();
+  ctx.ellipse(0, -4, 14, 6, 0, 0, Math.PI);
+  ctx.fill();
+  // Jacket shine
+  ctx.fillStyle = "#3a3a3a";
+  ctx.beginPath();
+  ctx.ellipse(-8, 2, 4, 8, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Duck body (yellow)
+  ctx.fillStyle = "#f4d03f";
+  ctx.beginPath();
+  ctx.ellipse(2, -8, 12, 10, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Duck head
+  ctx.fillStyle = "#f4d03f";
+  ctx.beginPath();
+  ctx.arc(5, -12, 11, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Orange beak
+  ctx.fillStyle = "#e67e22";
+  ctx.beginPath();
+  ctx.moveTo(14, -10);
+  ctx.lineTo(24, -12);
+  ctx.lineTo(24, -8);
+  ctx.lineTo(14, -8);
+  ctx.closePath();
+  ctx.fill();
+
+  // Baseball cap
+  ctx.fillStyle = "#3a3a5a";
+  ctx.beginPath();
+  ctx.arc(3, -18, 10, Math.PI, 0, false);
+  ctx.fill();
+  // Cap brim
+  ctx.fillStyle = "#2a2a4a";
+  ctx.beginPath();
+  ctx.ellipse(12, -15, 10, 4, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Pixel sunglasses
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(-4, -14, 12, 4);
+  ctx.fillRect(10, -14, 12, 4);
+  ctx.fillRect(8, -13, 2, 2);
+  // Shine
+  ctx.fillStyle = "#ffffff";
+  ctx.globalAlpha = 0.3;
+  ctx.fillRect(1, -13, 2, 2);
+  ctx.fillRect(15, -13, 2, 2);
+  ctx.globalAlpha = 1.0;
+
+  // Wing
+  ctx.fillStyle = "#f4d03f";
+  ctx.beginPath();
+  ctx.ellipse(-12, 8, 6, 10, -0.5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Character 1: Beanie Bird (Blue with beanie & gold chain)
+function drawBeanieBird(ctx) {
+  // Body
+  ctx.fillStyle = "#5dade2";
+  ctx.beginPath();
+  ctx.ellipse(0, 5, 16, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#5dade2";
+  ctx.beginPath();
+  ctx.arc(3, -8, 13, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Beanie
+  ctx.fillStyle = "#8B4513";
+  ctx.beginPath();
+  ctx.arc(3, -14, 11, Math.PI, 0, false);
+  ctx.fill();
+  // Beanie ridges
+  ctx.strokeStyle = "#6d3610";
+  ctx.lineWidth = 2;
+  for(let i = -8; i <= 8; i += 4) {
+    ctx.beginPath();
+    ctx.moveTo(3 + i, -14);
+    ctx.lineTo(3 + i, -24);
+    ctx.stroke();
+  }
+  // Beanie poof
+  ctx.fillStyle = "#8B4513";
+  ctx.beginPath();
+  ctx.arc(3, -26, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eyes
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.arc(0, -10, 5, 0, Math.PI * 2);
+  ctx.arc(10, -10, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#1a5276";
+  ctx.beginPath();
+  ctx.arc(1, -10, 2, 0, Math.PI * 2);
+  ctx.arc(11, -10, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Orange beak
+  ctx.fillStyle = "#e67e22";
+  ctx.beginPath();
+  ctx.moveTo(12, -5);
+  ctx.lineTo(22, -3);
+  ctx.lineTo(18, 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Gold chain
+  ctx.strokeStyle = "#f1c40f";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(2, 0, 10, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+  // $ pendant
+  ctx.fillStyle = "#f1c40f";
+  ctx.beginPath();
+  ctx.arc(2, 10, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#000";
+  ctx.font = "bold 8px Arial";
+  ctx.fillText("$", -1, 13);
+
+  // Jeans
+  ctx.fillStyle = "#5d6d7e";
+  ctx.fillRect(-10, 14, 20, 8);
+
+  // Wing
+  ctx.fillStyle = "#5dade2";
+  ctx.beginPath();
+  ctx.ellipse(-14, 5, 8, 6, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Character 2: Crying Bird (Green with bow & tattered dress)
+function drawCryingBird(ctx) {
+  // Tattered dress
+  ctx.fillStyle = "#7f8c8d";
+  ctx.beginPath();
+  ctx.moveTo(-15, 0);
+  ctx.lineTo(15, 0);
+  ctx.lineTo(18, 20);
+  ctx.lineTo(-18, 20);
+  ctx.closePath();
+  ctx.fill();
+  // Dress holes
+  ctx.fillStyle = "#58d68d";
+  ctx.beginPath();
+  ctx.arc(-8, 10, 3, 0, Math.PI * 2);
+  ctx.arc(5, 15, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Body
+  ctx.fillStyle = "#58d68d";
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 14, 12, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#58d68d";
+  ctx.beginPath();
+  ctx.arc(2, -12, 12, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Bow
+  ctx.fillStyle = "#7f8c8d";
+  ctx.beginPath();
+  ctx.moveTo(0, -24);
+  ctx.lineTo(-8, -20);
+  ctx.lineTo(0, -22);
+  ctx.lineTo(8, -20);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(0, -22, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Closed happy eyes (crying from laughter)
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(-4, -14, 4, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(8, -14, 4, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+
+  // Blush
+  ctx.fillStyle = "#ff9999";
+  ctx.beginPath();
+  ctx.ellipse(-10, -10, 3, 2, 0, 0, Math.PI * 2);
+  ctx.ellipse(14, -10, 3, 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Tears
+  ctx.fillStyle = "#85c1e9";
+  ctx.beginPath();
+  ctx.ellipse(-6, -8, 2, 4, 0.2, 0, Math.PI * 2);
+  ctx.ellipse(10, -8, 2, 4, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Open beak (laughing)
+  ctx.fillStyle = "#d4ac0d";
+  ctx.beginPath();
+  ctx.moveTo(10, -8);
+  ctx.lineTo(20, -6);
+  ctx.lineTo(16, -2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Wing
+  ctx.fillStyle = "#58d68d";
+  ctx.beginPath();
+  ctx.ellipse(-12, 2, 7, 8, -0.4, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Character 3: Bandana Duck (Yellow with pink bandana & leather jacket)
+function drawBandanaDuck(ctx) {
+  // Leather jacket
+  ctx.fillStyle = "#1a1a1a";
+  ctx.beginPath();
+  ctx.ellipse(0, 5, 16, 13, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // White shirt underneath
+  ctx.fillStyle = "#ecf0f1";
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 8, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Neck/body
+  ctx.fillStyle = "#f4d03f";
+  ctx.beginPath();
+  ctx.ellipse(2, -6, 10, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#f4d03f";
+  ctx.beginPath();
+  ctx.arc(4, -14, 11, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Pink bandana
+  ctx.fillStyle = "#ff69b4";
+  ctx.beginPath();
+  ctx.arc(4, -20, 9, Math.PI, 0, false);
+  ctx.fill();
+  // Bandana knot/tail
+  ctx.beginPath();
+  ctx.moveTo(12, -20);
+  ctx.lineTo(22, -18);
+  ctx.lineTo(20, -22);
+  ctx.lineTo(12, -20);
+  ctx.fill();
+  // Bandana dots
+  ctx.fillStyle = "#fff";
+  ctx.globalAlpha = 0.5;
+  for(let i = -5; i <= 5; i += 3) {
+    ctx.beginPath();
+    ctx.arc(4 + i, -22, 1, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1.0;
+
+  // Sunglasses
+  ctx.fillStyle = "#2c3e50";
+  ctx.fillRect(-4, -16, 10, 5);
+  ctx.fillRect(8, -16, 10, 5);
+  ctx.fillRect(6, -15, 2, 3);
+  // Shine
+  ctx.fillStyle = "#fff";
+  ctx.globalAlpha = 0.4;
+  ctx.fillRect(-2, -15, 3, 2);
+  ctx.fillRect(10, -15, 3, 2);
+  ctx.globalAlpha = 1.0;
+
+  // Beak
+  ctx.fillStyle = "#e67e22";
+  ctx.beginPath();
+  ctx.moveTo(14, -10);
+  ctx.lineTo(24, -9);
+  ctx.lineTo(22, -5);
+  ctx.closePath();
+  ctx.fill();
+
+  // Wings out
+  ctx.fillStyle = "#f4d03f";
+  ctx.beginPath();
+  ctx.ellipse(-16, 4, 8, 5, -0.4, 0, Math.PI * 2);
+  ctx.ellipse(16, 4, 8, 5, 0.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Sparkles
+  ctx.fillStyle = "#fff";
+  ctx.font = "10px Arial";
+  ctx.fillText("✦", -20, -15);
+  ctx.fillText("✦", 18, -8);
+}
+
+// Character 4: Fancy Bird (Red with blue dress & bow)
+function drawFancyBird(ctx) {
+  // Blue dress
+  ctx.fillStyle = "#2c3e50";
+  ctx.beginPath();
+  ctx.moveTo(-12, -2);
+  ctx.lineTo(12, -2);
+  ctx.lineTo(18, 18);
+  ctx.lineTo(-18, 18);
+  ctx.closePath();
+  ctx.fill();
+  // Dress ruffle
+  ctx.fillStyle = "#ecf0f1";
+  ctx.beginPath();
+  for(let i = -18; i <= 18; i += 6) {
+    ctx.arc(i, 18, 3, Math.PI, 0, false);
+  }
+  ctx.fill();
+  // Collar ruffle
+  ctx.fillStyle = "#ecf0f1";
+  ctx.beginPath();
+  for(let i = -10; i <= 10; i += 5) {
+    ctx.arc(i, -2, 2, Math.PI, 0, false);
+  }
+  ctx.fill();
+
+  // Body
+  ctx.fillStyle = "#c0392b";
+  ctx.beginPath();
+  ctx.ellipse(0, -4, 10, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Neck
+  ctx.fillStyle = "#c0392b";
+  ctx.fillRect(-4, -16, 8, 14);
+
+  // Head
+  ctx.fillStyle = "#c0392b";
+  ctx.beginPath();
+  ctx.arc(0, -20, 10, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Big blue bow
+  ctx.fillStyle = "#2c3e50";
+  ctx.beginPath();
+  ctx.moveTo(0, -30);
+  ctx.lineTo(-12, -26);
+  ctx.lineTo(0, -28);
+  ctx.lineTo(12, -26);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(0, -28, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Droopy eyes
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.ellipse(-5, -22, 4, 5, 0, 0, Math.PI * 2);
+  ctx.ellipse(5, -22, 4, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#2c3e50";
+  ctx.beginPath();
+  ctx.arc(-4, -21, 2, 0, Math.PI * 2);
+  ctx.arc(6, -21, 2, 0, Math.PI * 2);
+  ctx.fill();
+  // Eyelids (bored look)
+  ctx.fillStyle = "#c0392b";
+  ctx.fillRect(-9, -27, 8, 3);
+  ctx.fillRect(1, -27, 8, 3);
+
+  // Long beak
+  ctx.fillStyle = "#e67e22";
+  ctx.beginPath();
+  ctx.moveTo(8, -18);
+  ctx.lineTo(22, -16);
+  ctx.lineTo(20, -12);
+  ctx.closePath();
+  ctx.fill();
+
+  // Wing
+  ctx.fillStyle = "#c0392b";
+  ctx.beginPath();
+  ctx.ellipse(-14, 2, 6, 8, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Character 5: Derpy Bird (Red with overalls & big eyes)
+function drawDerpyBird(ctx) {
+  // Overalls
+  ctx.fillStyle = "#5d6d7e";
+  ctx.fillRect(-10, 2, 20, 16);
+  // Straps
+  ctx.fillRect(-10, -8, 4, 12);
+  ctx.fillRect(6, -8, 4, 12);
+  // Buttons
+  ctx.fillStyle = "#95a5a6";
+  ctx.beginPath();
+  ctx.arc(-8, -6, 2, 0, Math.PI * 2);
+  ctx.arc(8, -6, 2, 0, Math.PI * 2);
+  ctx.fill();
+  // Pocket
+  ctx.fillStyle = "#4a5568";
+  ctx.fillRect(-5, 8, 10, 6);
+
+  // Body
+  ctx.fillStyle = "#e74c3c";
+  ctx.beginPath();
+  ctx.ellipse(0, -2, 12, 10, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#e74c3c";
+  ctx.beginPath();
+  ctx.arc(0, -14, 12, 0, Math.PI * 2);
+  ctx.fill();
+
+  // BIG derpy eyes
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.arc(-6, -16, 7, 0, Math.PI * 2);
+  ctx.arc(6, -16, 7, 0, Math.PI * 2);
+  ctx.fill();
+  // Pupils (looking different directions)
+  ctx.fillStyle = "#000";
+  ctx.beginPath();
+  ctx.arc(-4, -15, 3, 0, Math.PI * 2);
+  ctx.arc(8, -17, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Open beak (excited)
+  ctx.fillStyle = "#d4ac0d";
+  ctx.beginPath();
+  ctx.moveTo(8, -10);
+  ctx.lineTo(24, -12);
+  ctx.lineTo(22, -4);
+  ctx.closePath();
+  ctx.fill();
+  // Inside mouth
+  ctx.fillStyle = "#922b21";
+  ctx.beginPath();
+  ctx.arc(14, -8, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Wings up (excited)
+  ctx.fillStyle = "#e74c3c";
+  ctx.beginPath();
+  ctx.ellipse(-16, -4, 6, 10, -0.6, 0, Math.PI * 2);
+  ctx.ellipse(16, -4, 6, 10, 0.6, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Character 6: Queen Bird (Blue with cap, ponytail & QUEEN chain)
+function drawQueenBird(ctx) {
+  // Overalls
+  ctx.fillStyle = "#5d6d7e";
+  ctx.fillRect(-10, 4, 20, 14);
+  ctx.fillRect(-10, -4, 4, 10);
+  ctx.fillRect(6, -4, 4, 10);
+
+  // Body
+  ctx.fillStyle = "#5dade2";
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 14, 12, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#5dade2";
+  ctx.beginPath();
+  ctx.arc(2, -14, 12, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Cap (backwards)
+  ctx.fillStyle = "#8B4513";
+  ctx.beginPath();
+  ctx.arc(2, -18, 10, Math.PI * 0.8, Math.PI * 0.2, true);
+  ctx.fill();
+  // Cap brim (back)
+  ctx.fillStyle = "#6d3610";
+  ctx.beginPath();
+  ctx.ellipse(-8, -16, 6, 3, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ponytail
+  ctx.fillStyle = "#8B4513";
+  ctx.beginPath();
+  ctx.moveTo(10, -22);
+  ctx.quadraticCurveTo(20, -20, 18, -10);
+  ctx.quadraticCurveTo(16, -16, 10, -18);
+  ctx.fill();
+
+  // Winking eye
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.arc(-2, -14, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#1a5276";
+  ctx.beginPath();
+  ctx.arc(-1, -14, 2, 0, Math.PI * 2);
+  ctx.fill();
+  // Wink
+  ctx.strokeStyle = "#1a5276";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(8, -14, 4, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+
+  // Hoop earrings
+  ctx.strokeStyle = "#f1c40f";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(-10, -8, 5, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Beak (smiling)
+  ctx.fillStyle = "#e67e22";
+  ctx.beginPath();
+  ctx.moveTo(10, -10);
+  ctx.lineTo(22, -8);
+  ctx.lineTo(18, -4);
+  ctx.closePath();
+  ctx.fill();
+
+  // Gold chain with QUEEN
+  ctx.strokeStyle = "#f1c40f";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(0, 2, 12, 0.3, Math.PI - 0.3);
+  ctx.stroke();
+  // QUEEN pendant
+  ctx.fillStyle = "#f1c40f";
+  ctx.font = "bold 6px Arial";
+  ctx.fillText("QUEEN", -14, 16);
+
+  // Wings
+  ctx.fillStyle = "#5dade2";
+  ctx.beginPath();
+  ctx.ellipse(-16, 2, 6, 10, -0.4, 0, Math.PI * 2);
+  ctx.ellipse(16, 2, 6, 10, 0.4, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Character 7: Chonky Bird (Green with white tank top)
+function drawChonkyBird(ctx) {
+  // CHONKY body
+  ctx.fillStyle = "#7dcea0";
+  ctx.beginPath();
+  ctx.ellipse(0, 6, 20, 18, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // White tank top
+  ctx.fillStyle = "#ecf0f1";
+  ctx.beginPath();
+  ctx.ellipse(0, 4, 16, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Tank straps
+  ctx.fillRect(-8, -10, 4, 12);
+  ctx.fillRect(4, -10, 4, 12);
+
+  // Belly showing
+  ctx.fillStyle = "#7dcea0";
+  ctx.beginPath();
+  ctx.ellipse(0, 14, 10, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#7dcea0";
+  ctx.beginPath();
+  ctx.arc(0, -12, 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Spiky hair
+  ctx.fillStyle = "#229954";
+  ctx.beginPath();
+  ctx.moveTo(-6, -24);
+  ctx.lineTo(-4, -30);
+  ctx.lineTo(-2, -24);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(0, -25);
+  ctx.lineTo(2, -32);
+  ctx.lineTo(4, -25);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(4, -24);
+  ctx.lineTo(6, -29);
+  ctx.lineTo(8, -24);
+  ctx.fill();
+
+  // Bugged out eyes
+  ctx.fillStyle = "#fdebd0";
+  ctx.beginPath();
+  ctx.arc(-6, -14, 7, 0, Math.PI * 2);
+  ctx.arc(6, -14, 7, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#000";
+  ctx.beginPath();
+  ctx.arc(-5, -13, 3, 0, Math.PI * 2);
+  ctx.arc(7, -13, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Open beak
+  ctx.fillStyle = "#d4ac0d";
+  ctx.beginPath();
+  ctx.moveTo(10, -8);
+  ctx.lineTo(22, -6);
+  ctx.lineTo(18, 0);
+  ctx.closePath();
+  ctx.fill();
+  // Mouth open
+  ctx.fillStyle = "#922b21";
+  ctx.beginPath();
+  ctx.ellipse(14, -4, 4, 3, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Stubby wing
+  ctx.fillStyle = "#7dcea0";
+  ctx.beginPath();
+  ctx.ellipse(-18, 4, 6, 10, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Feet
+  ctx.fillStyle = "#d4ac0d";
+  ctx.fillRect(-8, 20, 6, 4);
+  ctx.fillRect(2, 20, 6, 4);
+}
+
+// Bird Object
+let selectedCharacter = 0;
+
+const bird = {
+  x: 150,
+  y: 150,
+  w: 40,
+  h: 45,
+  radius: 16,
+
+  gravity: 0.25,
+  jump: 4.6,
+  speed: 0,
+  rotation: 0,
+
+  draw: function() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    
+    // Draw selected character
+    drawCharacter(ctx, selectedCharacter);
+    
+    ctx.restore();
+  },
+
+  flap: function() {
+    this.speed = -this.jump;
+    spawnFartCloud();
+    playFart();
+  },
+
+  update: function() {
+    if (state.current === state.getReady) {
+      this.y = 150;
+      this.rotation = 0;
+      this.speed = 0;
+    } else {
+      this.speed += this.gravity;
+      this.y += this.speed;
+      
+      // Check ceiling collision
+      if (this.y - this.radius <= 0) {
+        this.y = this.radius;
+        if (state.current === state.game) {
+          state.current = state.over;
+          playHit();
+        }
+      }
+      
+      // Check floor collision
+      if (this.y + this.radius >= canvas.height - assets.fg.h) {
+        this.y = canvas.height - assets.fg.h - this.radius;
+        if (state.current === state.game) {
+          state.current = state.over;
+          playHit();
+        }
+      }
+      
+      if (this.speed >= this.jump) {
+        this.rotation = 90 * DEGREE;
+      } else {
+        this.rotation = -25 * DEGREE;
+      }
+    }
+  }
+};
+
+// Skyscrapers Object (replaces pipes)
+  const pipes = {
+    gap: 175,
+    maxYPos: 250,
+    minYPos: 100,
+    dx: 2,
+    position: [],
+
+    // Building color palettes - more variety for city at night
+    buildingColors: [
+      { main: '#4a4a4a', accent: '#333333', window: '#87CEEB', windowOff: '#2a2a3a' }, // Dark grey - blue windows
+      { main: '#5c4033', accent: '#3d2817', window: '#FFE4B5', windowOff: '#3d2817' }, // Brown brick - warm
+      { main: '#2f4f4f', accent: '#1a3333', window: '#98FB98', windowOff: '#1a2a1a' }, // Dark slate - green
+      { main: '#483d8b', accent: '#2e2561', window: '#DDA0DD', windowOff: '#2e2540' }, // Slate blue - purple
+      { main: '#8b4513', accent: '#5c2d0e', window: '#FFEFD5', windowOff: '#3d2817' }, // Saddle brown
+      { main: '#36454f', accent: '#232d33', window: '#ADD8E6', windowOff: '#1a2530' }, // Charcoal - light blue
+      { main: '#1a1a2e', accent: '#0f0f1a', window: '#ff6b6b', windowOff: '#1a1a2e' }, // Dark blue - red windows
+      { main: '#2d2d44', accent: '#1a1a2e', window: '#ffd93d', windowOff: '#2d2d30' }, // Purple grey - yellow
+      { main: '#3d3d3d', accent: '#2a2a2a', window: '#6bcb77', windowOff: '#2a2a2a' }, // Grey - green
+      { main: '#4a3728', accent: '#2d1f17', window: '#ff9f43', windowOff: '#2d1f17' }, // Brown - orange
+    ],
+
+    // Building architectural styles
+    buildingStyles: ['modern', 'classic', 'artdeco', 'industrial'],
+
+    draw: function() {
+      for (let i = 0; i < this.position.length; i++) {
+        let p = this.position[i];
+        let topYPos = p.y;
+        let bottomYPos = p.y + this.gap;
+        const colors = p.colors;
+        const width = 52;
+
+        // === TOP SKYSCRAPER (hanging from top) ===
+        // Main building body
+        ctx.fillStyle = colors.main;
+        ctx.fillRect(p.x, 0, width, topYPos);
+
+        // Building edge/shadow
+        ctx.fillStyle = colors.accent;
+        ctx.fillRect(p.x, 0, 4, topYPos);
+        ctx.fillRect(p.x + width - 4, 0, 4, topYPos);
+
+        // Windows for top building
+        const windowRows = Math.floor(topYPos / 25);
+        for (let row = 0; row < windowRows; row++) {
+          for (let col = 0; col < 3; col++) {
+            // Some windows are lit, some are dark
+            if (p.windowPattern[(row * 3 + col) % p.windowPattern.length]) {
+              ctx.fillStyle = colors.window;
+              // Add glow effect for lit windows
+              ctx.shadowColor = colors.window;
+              ctx.shadowBlur = 3;
+            } else {
+              ctx.fillStyle = colors.windowOff || colors.accent;
+              ctx.shadowBlur = 0;
+            }
+            ctx.fillRect(p.x + 8 + col * 14, 10 + row * 25, 10, 15);
+          }
+        }
+        ctx.shadowBlur = 0;
+
+        // Bottom edge decoration (like a ledge)
+        ctx.fillStyle = colors.accent;
+        ctx.fillRect(p.x - 3, topYPos - 15, width + 6, 15);
+        
+        // Antenna or spire on top building (at bottom since it's inverted)
+        if (p.hasAntenna) {
+          ctx.fillStyle = '#666666';
+          ctx.fillRect(p.x + width/2 - 2, topYPos - 25, 4, 25);
+          // Antenna light
+          ctx.fillStyle = '#ff0000';
+          ctx.beginPath();
+          ctx.arc(p.x + width/2, topYPos - 27, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // === BOTTOM SKYSCRAPER (rising from bottom) ===
+        const bottomHeight = canvas.height - bottomYPos;
+        
+        // Main building body
+        ctx.fillStyle = colors.main;
+        ctx.fillRect(p.x, bottomYPos, width, bottomHeight);
+
+        // Building edge/shadow
+        ctx.fillStyle = colors.accent;
+        ctx.fillRect(p.x, bottomYPos, 4, bottomHeight);
+        ctx.fillRect(p.x + width - 4, bottomYPos, 4, bottomHeight);
+
+        // Top edge decoration (roof ledge)
+        ctx.fillStyle = colors.accent;
+        ctx.fillRect(p.x - 3, bottomYPos, width + 6, 15);
+
+        // Roof details
+        if (p.roofStyle === 'pointed') {
+          ctx.fillStyle = colors.accent;
+          ctx.beginPath();
+          ctx.moveTo(p.x + width/2, bottomYPos - 20);
+          ctx.lineTo(p.x + width + 3, bottomYPos);
+          ctx.lineTo(p.x - 3, bottomYPos);
+          ctx.closePath();
+          ctx.fill();
+        } else if (p.roofStyle === 'antenna') {
+          ctx.fillStyle = '#888888';
+          ctx.fillRect(p.x + width/2 - 2, bottomYPos - 30, 4, 30);
+          ctx.fillStyle = '#ff3333';
+          ctx.beginPath();
+          ctx.arc(p.x + width/2, bottomYPos - 32, 4, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.roofStyle === 'water-tower') {
+          ctx.fillStyle = '#666666';
+          ctx.fillRect(p.x + width/2 - 8, bottomYPos - 20, 16, 20);
+          ctx.fillStyle = '#555555';
+          ctx.beginPath();
+          ctx.arc(p.x + width/2, bottomYPos - 20, 10, Math.PI, 0);
+          ctx.fill();
+        }
+
+        // Windows for bottom building
+        const bottomWindowRows = Math.floor((bottomHeight - 20) / 25);
+        for (let row = 0; row < bottomWindowRows; row++) {
+          for (let col = 0; col < 3; col++) {
+            if (p.windowPattern[(row * 3 + col + 5) % p.windowPattern.length]) {
+              ctx.fillStyle = colors.window;
+              ctx.shadowColor = colors.window;
+              ctx.shadowBlur = 3;
+            } else {
+              ctx.fillStyle = colors.windowOff || colors.accent;
+              ctx.shadowBlur = 0;
+            }
+            ctx.fillRect(p.x + 8 + col * 14, bottomYPos + 20 + row * 25, 10, 15);
+          }
+        }
+        ctx.shadowBlur = 0;
+      }
+    },
+
+    update: function() {
+      if (state.current !== state.game) return;
+
+      if (frames % 100 === 0) {
+        // Randomize the Y position of the gap between minYPos and maxYPos
+        // This represents the bottom of the top building
+        let gapY = this.minYPos + Math.random() * (this.maxYPos - this.minYPos);
+        
+        // Generate random window pattern (which windows are lit)
+        const windowPattern = [];
+        for (let i = 0; i < 20; i++) {
+          windowPattern.push(Math.random() > 0.3);
+        }
+
+        this.position.push({
+          x: canvas.width,
+          y: gapY,
+          scored: false,
+          colors: this.buildingColors[Math.floor(Math.random() * this.buildingColors.length)],
+          windowPattern: windowPattern,
+          hasAntenna: Math.random() > 0.5,
+          roofStyle: ['flat', 'pointed', 'antenna', 'water-tower'][Math.floor(Math.random() * 4)]
+        });
+      }
+
+      for (let i = 0; i < this.position.length; i++) {
+        let p = this.position[i];
+
+        p.x -= this.dx;
+
+        // Collision detection
+        if (bird.x + bird.radius > p.x && bird.x - bird.radius < p.x + 52 &&
+            (bird.y - bird.radius < p.y || bird.y + bird.radius > p.y + this.gap)) {
+          state.current = state.over;
+          playHit();
+        }
+
+        // Score
+        if (!p.scored && p.x + 52 < bird.x) {
+          p.scored = true;
+          score.value += 1;
+          scoreEl.textContent = score.value;
+        }
+
+        // Remove off-screen buildings
+      if (p.x + 52 <= 0) {
+        this.position.shift();
+      }
+    }
+  },
+  
+  reset: function() {
+    this.position = [];
+  }
+};
+
+// Helper function to ensure background music starts on first interaction
+async function ensureBackgroundMusic() {
+  if (!bgMusicStarted) {
+    await startBackgroundMusic();
+  }
+}
+
+// Event Handlers
+function action() {
+  ensureBackgroundMusic();
+  
+  switch (state.current) {
+    case state.getReady:
+      // Don't start game on spacebar during getReady, only via PLAY button
+      break;
+    case state.game:
+      bird.flap();
+      break;
+    case state.over:
+      // Don't allow flapping when game is over
+      break;
+  }
+}
+
+// Input events
+canvas.addEventListener('click', action);
+canvas.addEventListener('touchstart', function(e) {
+  e.preventDefault();
+  action();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    action();
+  }
+});
+
+// Button handlers
+startBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  ensureBackgroundMusic();
+  startGame();
+});
+
+restartBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  // Background music continues playing
+  resetGame();
+});
+
+// Game Functions
+function startGame() {
+  state.current = state.game;
+  startScreen.classList.add('hidden');
+  scoreEl.classList.remove('hidden');
+  bird.flap();
+}
+
+function resetGame() {
+  state.current = state.getReady;
+  score.value = 0;
+  frames = 0;
+  gameOverCalled = false;
+  pipes.reset();
+  fartClouds.length = 0;
+  bird.y = 150;
+  bird.speed = 0;
+  bird.rotation = 0;
+  gameOverScreen.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+  scoreEl.classList.add('hidden');
+  scoreEl.textContent = '0';
+}
+
+function gameOver() {
+  if (gameOverCalled) return;
+  gameOverCalled = true;
+  
+  gameOverScreen.classList.remove('hidden');
+  scoreEl.classList.add('hidden');
+  finalScoreEl.textContent = 'Score: ' + score.value;
+  
+  if (score.value > score.best) {
+    score.best = score.value;
+    localStorage.setItem('fartybird_best', score.best);
+  }
+  
+  highScoreEl.textContent = 'Best: ' + score.best;
+}
+
+// Game Loop
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  assets.bg.draw();
+  pipes.draw();
+  pipes.update();
+  assets.fg.draw();
+  bird.draw();
+  bird.update();
+  
+  updateFartClouds();
+  drawFartClouds();
+  
+  if (state.current === state.over) {
+    if (frames % 60 === 0) {
+      gameOver();
+    }
+  }
+  
+  frames++;
+  requestAnimationFrame(loop);
+}
+
+// Initialize
+// Initialize character preview canvases
+function initCharacterPreviews() {
+  for (let i = 0; i < 8; i++) {
+    const previewCanvas = document.getElementById('char-' + i);
+    if (previewCanvas) {
+      previewCanvas.width = 50;
+      previewCanvas.height = 50;
+      const previewCtx = previewCanvas.getContext('2d');
+      previewCtx.translate(25, 28);
+      previewCtx.scale(0.7, 0.7);
+      drawCharacter(previewCtx, i);
+    }
+  }
+}
+
+// Character selector event handlers
+function setupCharacterSelector() {
+  const charBtns = document.querySelectorAll('.char-btn');
+  charBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      // Remove selected from all
+      charBtns.forEach(b => b.classList.remove('selected'));
+      // Add selected to clicked
+      this.classList.add('selected');
+      // Update selected character
+      selectedCharacter = parseInt(this.dataset.char);
+    });
+  });
+}
+
+function init() {
+  canvas.width = 432;
+  canvas.height = 768;
+
+  state.current = state.getReady;
+  startScreen.classList.remove('hidden');
+  gameOverScreen.classList.add('hidden');
+  scoreEl.classList.add('hidden');
+
+  // Initialize character selector
+  initCharacterPreviews();
+  setupCharacterSelector();
+  
+  loop();
+}
+
+init();
+</script>
+</body>
+</html>
