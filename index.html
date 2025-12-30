@@ -395,16 +395,6 @@ p {
         </div>
       </div>
       
-
-      <div class="difficulty-selector">
-        <label>DIFFICULTY:</label>
-        <div class="difficulty-btns">
-          <button class="diff-btn easy selected" data-diff="easy">EASY</button>
-          <button class="diff-btn normal" data-diff="normal">NORMAL</button>
-          <button class="diff-btn hard" data-diff="hard">HARD</button>
-        </div>
-      </div>
-      
       <button class="btn" id="start-btn">PLAY</button>
       </div>
     <div id="game-over-screen" class="hidden">
@@ -2571,9 +2561,6 @@ function init() {
   // Initialize character selector
   initCharacterPreviews();
   setupCharacterSelector();
-  setupDifficultySelector();
-  setupLeaderboard();
-  displayLeaderboard();
   setupDifficultySelector();
   setupLeaderboard();
   displayLeaderboard();
