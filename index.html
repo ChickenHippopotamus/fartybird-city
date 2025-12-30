@@ -1127,120 +1127,6 @@ async function playDeathSound() {
 
 
 
-// Selection and Death Sound Effects
-async function playSelectChime() {
-  try {
-    await initAudioContext();
-    if (!audioCtx) return;
-    
-    const t = audioCtx.currentTime;
-    
-    // Pleasant ascending chime
-    [523, 659, 784].forEach((freq, i) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0, t + i * 0.1);
-      gain.gain.linearRampToValueAtTime(0.2, t + i * 0.1 + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.01, t + i * 0.1 + 0.3);
-      
-      osc.start(t + i * 0.1);
-      osc.stop(t + i * 0.1 + 0.3);
-    });
-  } catch (e) { console.warn('Chime failed:', e); }
-}
-
-async function playDifficultySelect() {
-  try {
-    await initAudioContext();
-    if (!audioCtx) return;
-    
-    const t = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(440, t);
-    osc.frequency.setValueAtTime(550, t + 0.1);
-    gain.gain.setValueAtTime(0.15, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-    
-    osc.start(t);
-    osc.stop(t + 0.2);
-  } catch (e) { console.warn('Difficulty sound failed:', e); }
-}
-
-async function playDeathSound() {
-  try {
-    await initAudioContext();
-    if (!audioCtx) return;
-    
-    const t = audioCtx.currentTime;
-    const deathType = Math.floor(Math.random() * 3);
-    
-    if (deathType === 0) {
-      // Downward spiral
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(800, t);
-      osc.frequency.exponentialRampToValueAtTime(100, t + 0.5);
-      gain.gain.setValueAtTime(0.3, t);
-      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
-      
-      osc.start(t);
-      osc.stop(t + 0.5);
-      
-    } else if (deathType === 1) {
-      // Sad trombone style
-      [300, 280, 260, 240].forEach((freq, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        
-        osc.type = 'triangle';
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.2, t + i * 0.15);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + i * 0.15 + 0.14);
-        
-        osc.start(t + i * 0.15);
-        osc.stop(t + i * 0.15 + 0.15);
-      });
-      
-    } else {
-      // Splat/crash
-      const bufferSize = audioCtx.sampleRate * 0.3;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
-      }
-      
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = buffer;
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.value = 500;
-      const gain = audioCtx.createGain();
-      gain.gain.value = 0.4;
-      
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
-      noise.start(t);
-    }
-  } catch (e) { console.warn('Death sound failed:', e); }
-}
 
 
 async function playHit() {
@@ -2447,9 +2333,12 @@ function initCharacterPreviews() {
       previewCanvas.width = 50;
       previewCanvas.height = 50;
       const previewCtx = previewCanvas.getContext('2d');
-      previewCtx.translate(25, 28);
-      previewCtx.scale(0.7, 0.7);
+      // Save context state before transformations
+      previewCtx.save();
+      previewCtx.translate(25, 25);
+      previewCtx.scale(0.6, 0.6);
       drawCharacter(previewCtx, i);
+      previewCtx.restore();
     }
   }
 }
@@ -2543,7 +2432,6 @@ function setupCharacterSelector() {
       this.classList.add('selected');
       // Update selected character
       selectedCharacter = parseInt(this.dataset.char);
-      playSelectChime();
       playSelectChime();
     });
   });
