@@ -151,6 +151,199 @@ p {
   width: 100%;
   height: 100%;
 }
+
+/* Difficulty Selector */
+.difficulty-selector {
+  margin: 15px 0;
+}
+
+.difficulty-selector label {
+  font-size: 0.7rem;
+  color: #ffcc00;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.difficulty-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.diff-btn {
+  padding: 8px 16px;
+  border: 2px solid #555;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.diff-btn:hover {
+  border-color: #ffcc00;
+  transform: scale(1.05);
+}
+
+.diff-btn.selected {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.3);
+  box-shadow: 0 0 10px #4CAF50;
+}
+
+.diff-btn.easy { color: #4CAF50; }
+.diff-btn.normal { color: #ffcc00; }
+.diff-btn.hard { color: #ff6b6b; }
+
+/* Leaderboard Styles */
+.leaderboard-container {
+  margin-top: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  font-size: 0.5rem;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.leaderboard-table th {
+  color: #ffcc00;
+  border-bottom: 1px solid #555;
+}
+
+.leaderboard-table tr:nth-child(even) {
+  background: rgba(255,255,255,0.05);
+}
+
+.leaderboard-table .gold { color: #ffd700; }
+.leaderboard-table .silver { color: #c0c0c0; }
+.leaderboard-table .bronze { color: #cd7f32; }
+
+#name-input-container {
+  margin-top: 15px;
+}
+
+#player-name {
+  padding: 8px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  background: rgba(0,0,0,0.5);
+  border: 2px solid #555;
+  color: white;
+  text-transform: uppercase;
+  width: 120px;
+  text-align: center;
+}
+
+#submit-score-btn {
+  padding: 8px 12px;
+  margin-left: 8px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.5rem;
+  background: #4CAF50;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+#submit-score-btn:hover {
+  background: #45a049;
+}
+
+
+/* Difficulty Selector */
+.difficulty-selector {
+  margin: 15px 0;
+}
+
+.difficulty-selector label {
+  font-size: 0.7rem;
+  color: #ffcc00;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.difficulty-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+
+
+/* Leaderboard Styles */
+.leaderboard-container {
+  margin-top: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  font-size: 0.5rem;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.leaderboard-table th {
+  color: #ffcc00;
+  border-bottom: 1px solid #555;
+}
+
+.leaderboard-table tr:nth-child(even) {
+  background: rgba(255,255,255,0.05);
+}
+
+.leaderboard-table .gold { color: #ffd700; }
+.leaderboard-table .silver { color: #c0c0c0; }
+.leaderboard-table .bronze { color: #cd7f32; }
+
+#name-input-container {
+  margin-top: 15px;
+}
+
+#player-name {
+  padding: 8px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  background: rgba(0,0,0,0.5);
+  border: 2px solid #555;
+  color: white;
+  text-transform: uppercase;
+  width: 120px;
+  text-align: center;
+}
+
+#submit-score-btn {
+  padding: 8px 12px;
+  margin-left: 8px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.5rem;
+  background: #4CAF50;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+#submit-score-btn:hover {
+  background: #45a049;
+}
+
 </style>
 </head>
 <body>
@@ -192,17 +385,64 @@ p {
         </div>
       </div>
       
-      <button class="btn" id="start-btn">PLAY</button>
-      <div style="margin-top: 20px; font-size: 0.6rem; color: #ffcc00; opacity: 0.9; line-height: 1.4;">
-        <span style="font-size: 0.5rem; color: #fff;">Not my Monkey anymore, but an Ape now.<br>I will always love you.</span>
+
+      <div class="difficulty-selector">
+        <label>DIFFICULTY:</label>
+        <div class="difficulty-btns">
+          <button class="diff-btn easy selected" data-diff="easy">EASY</button>
+          <button class="diff-btn normal" data-diff="normal">NORMAL</button>
+          <button class="diff-btn hard" data-diff="hard">HARD</button>
+        </div>
       </div>
-    </div>
+      
+
+      <div class="difficulty-selector">
+        <label>DIFFICULTY:</label>
+        <div class="difficulty-btns">
+          <button class="diff-btn easy selected" data-diff="easy">EASY</button>
+          <button class="diff-btn normal" data-diff="normal">NORMAL</button>
+          <button class="diff-btn hard" data-diff="hard">HARD</button>
+        </div>
+      </div>
+      
+      <button class="btn" id="start-btn">PLAY</button>
+      </div>
     <div id="game-over-screen" class="hidden">
       <h1>GAME OVER</h1>
       <div id="final-score">Score: 0</div>
       <div id="high-score">Best: 0</div>
       <br>
       <button class="btn" id="restart-btn">RETRY</button>
+
+      <div id="name-input-container">
+        <input type="text" id="player-name" maxlength="3" placeholder="AAA">
+        <button id="submit-score-btn">SAVE</button>
+      </div>
+      <div class="leaderboard-container">
+        <table class="leaderboard-table">
+          <thead>
+            <tr><th>#</th><th>NAME</th><th>SCORE</th></tr>
+          </thead>
+          <tbody id="leaderboard-body">
+          </tbody>
+        </table>
+      </div>
+      
+
+      <div id="name-input-container">
+        <input type="text" id="player-name" maxlength="3" placeholder="AAA">
+        <button id="submit-score-btn">SAVE</button>
+      </div>
+      <div class="leaderboard-container">
+        <table class="leaderboard-table">
+          <thead>
+            <tr><th>#</th><th>NAME</th><th>SCORE</th></tr>
+          </thead>
+          <tbody id="leaderboard-body">
+          </tbody>
+        </table>
+      </div>
+      
     </div>
   </div>
 </div>
@@ -211,7 +451,7 @@ p {
 /**
  * FARTYBIRD GAME ENGINE
  * 
- * Dedicated to Z, King of Farts 👑💨
+ * City Night Edition 👑💨
  * 
  * A hilarious Flappy Bird clone where the bird flies by farting!
  */
@@ -247,6 +487,8 @@ let score = {
 };
 
 let gameOverCalled = false;
+let spawnRate = 120;  // Will be set by difficulty
+let spawnRate = 120;  // Will be set by difficulty
 
 // Fart Cloud Particles
 const fartClouds = [];
@@ -776,6 +1018,240 @@ async function playFart() {
     console.warn('Fart sound playback failed:', error);
   }
 }
+
+
+// Selection and Death Sound Effects
+async function playSelectChime() {
+  try {
+    await initAudioContext();
+    if (!audioCtx) return;
+    
+    const t = audioCtx.currentTime;
+    
+    // Pleasant ascending chime
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t + i * 0.1);
+      gain.gain.linearRampToValueAtTime(0.2, t + i * 0.1 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + i * 0.1 + 0.3);
+      
+      osc.start(t + i * 0.1);
+      osc.stop(t + i * 0.1 + 0.3);
+    });
+  } catch (e) { console.warn('Chime failed:', e); }
+}
+
+async function playDifficultySelect() {
+  try {
+    await initAudioContext();
+    if (!audioCtx) return;
+    
+    const t = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(440, t);
+    osc.frequency.setValueAtTime(550, t + 0.1);
+    gain.gain.setValueAtTime(0.15, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+    
+    osc.start(t);
+    osc.stop(t + 0.2);
+  } catch (e) { console.warn('Difficulty sound failed:', e); }
+}
+
+async function playDeathSound() {
+  try {
+    await initAudioContext();
+    if (!audioCtx) return;
+    
+    const t = audioCtx.currentTime;
+    const deathType = Math.floor(Math.random() * 3);
+    
+    if (deathType === 0) {
+      // Downward spiral
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(800, t);
+      osc.frequency.exponentialRampToValueAtTime(100, t + 0.5);
+      gain.gain.setValueAtTime(0.3, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+      
+      osc.start(t);
+      osc.stop(t + 0.5);
+      
+    } else if (deathType === 1) {
+      // Sad trombone style
+      [300, 280, 260, 240].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.2, t + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + i * 0.15 + 0.14);
+        
+        osc.start(t + i * 0.15);
+        osc.stop(t + i * 0.15 + 0.15);
+      });
+      
+    } else {
+      // Splat/crash
+      const bufferSize = audioCtx.sampleRate * 0.3;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
+      }
+      
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 500;
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.4;
+      
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      noise.start(t);
+    }
+  } catch (e) { console.warn('Death sound failed:', e); }
+}
+
+
+
+// Selection and Death Sound Effects
+async function playSelectChime() {
+  try {
+    await initAudioContext();
+    if (!audioCtx) return;
+    
+    const t = audioCtx.currentTime;
+    
+    // Pleasant ascending chime
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t + i * 0.1);
+      gain.gain.linearRampToValueAtTime(0.2, t + i * 0.1 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + i * 0.1 + 0.3);
+      
+      osc.start(t + i * 0.1);
+      osc.stop(t + i * 0.1 + 0.3);
+    });
+  } catch (e) { console.warn('Chime failed:', e); }
+}
+
+async function playDifficultySelect() {
+  try {
+    await initAudioContext();
+    if (!audioCtx) return;
+    
+    const t = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(440, t);
+    osc.frequency.setValueAtTime(550, t + 0.1);
+    gain.gain.setValueAtTime(0.15, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+    
+    osc.start(t);
+    osc.stop(t + 0.2);
+  } catch (e) { console.warn('Difficulty sound failed:', e); }
+}
+
+async function playDeathSound() {
+  try {
+    await initAudioContext();
+    if (!audioCtx) return;
+    
+    const t = audioCtx.currentTime;
+    const deathType = Math.floor(Math.random() * 3);
+    
+    if (deathType === 0) {
+      // Downward spiral
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(800, t);
+      osc.frequency.exponentialRampToValueAtTime(100, t + 0.5);
+      gain.gain.setValueAtTime(0.3, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+      
+      osc.start(t);
+      osc.stop(t + 0.5);
+      
+    } else if (deathType === 1) {
+      // Sad trombone style
+      [300, 280, 260, 240].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.2, t + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + i * 0.15 + 0.14);
+        
+        osc.start(t + i * 0.15);
+        osc.stop(t + i * 0.15 + 0.15);
+      });
+      
+    } else {
+      // Splat/crash
+      const bufferSize = audioCtx.sampleRate * 0.3;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
+      }
+      
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 500;
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.4;
+      
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      noise.start(t);
+    }
+  } catch (e) { console.warn('Death sound failed:', e); }
+}
+
 
 async function playHit() {
   try {
@@ -1464,6 +1940,122 @@ function drawChonkyBird(ctx) {
 // Bird Object
 let selectedCharacter = 0;
 
+// Difficulty Settings
+let selectedDifficulty = 'easy';
+
+const difficultySettings = {
+  easy: {
+    gap: 200,           // Bigger gap between buildings
+    pipeSpeed: 1.5,     // Slower buildings
+    spawnRate: 120,     // Less frequent spawning
+    gravity: 0.2,       // Lighter gravity
+    jump: 4.2           // Slightly weaker jump
+  },
+  normal: {
+    gap: 200,  // Will be set by difficulty
+    pipeSpeed: 2,
+    spawnRate: 100,
+    gravity: 0.2,  // Will be set by difficulty
+    jump: 4.6
+  },
+  hard: {
+    gap: 140,           // Tighter gap
+    pipeSpeed: 2.8,     // Faster buildings
+    spawnRate: 80,      // More frequent
+    gravity: 0.3,       // Heavier gravity
+    jump: 5.0           // Stronger jump needed
+  }
+};
+
+// Leaderboard (localStorage based)
+function getLeaderboard() {
+  const data = localStorage.getItem('fartybird_leaderboard');
+  return data ? JSON.parse(data) : [];
+}
+
+function saveToLeaderboard(name, score) {
+  const leaderboard = getLeaderboard();
+  leaderboard.push({ name: name.toUpperCase(), score: score, date: Date.now() });
+  leaderboard.sort((a, b) => b.score - a.score);
+  const top10 = leaderboard.slice(0, 10);
+  localStorage.setItem('fartybird_leaderboard', JSON.stringify(top10));
+  return top10;
+}
+
+function displayLeaderboard() {
+  const leaderboard = getLeaderboard();
+  const tbody = document.getElementById('leaderboard-body');
+  if (!tbody) return;
+  
+  tbody.innerHTML = leaderboard.map((entry, i) => {
+    let rankClass = '';
+    if (i === 0) rankClass = 'gold';
+    else if (i === 1) rankClass = 'silver';
+    else if (i === 2) rankClass = 'bronze';
+    return '<tr class="' + rankClass + '"><td>' + (i + 1) + '</td><td>' + entry.name + '</td><td>' + entry.score + '</td></tr>';
+  }).join('');
+}
+
+
+
+// Difficulty Settings
+let selectedDifficulty = 'easy';
+
+const difficultySettings = {
+  easy: {
+    gap: 200,           // Bigger gap between buildings
+    pipeSpeed: 1.5,     // Slower buildings
+    spawnRate: 120,     // Less frequent spawning
+    gravity: 0.2,       // Lighter gravity
+    jump: 4.2           // Slightly weaker jump
+  },
+  normal: {
+    gap: 200,  // Will be set by difficulty
+    pipeSpeed: 2,
+    spawnRate: 100,
+    gravity: 0.2,  // Will be set by difficulty
+    jump: 4.6
+  },
+  hard: {
+    gap: 140,           // Tighter gap
+    pipeSpeed: 2.8,     // Faster buildings
+    spawnRate: 80,      // More frequent
+    gravity: 0.3,       // Heavier gravity
+    jump: 5.0           // Stronger jump needed
+  }
+};
+
+// Leaderboard (localStorage based)
+function getLeaderboard() {
+  const data = localStorage.getItem('fartybird_leaderboard');
+  return data ? JSON.parse(data) : [];
+}
+
+function saveToLeaderboard(name, score) {
+  const leaderboard = getLeaderboard();
+  leaderboard.push({ name: name.toUpperCase(), score: score, date: Date.now() });
+  leaderboard.sort((a, b) => b.score - a.score);
+  const top10 = leaderboard.slice(0, 10);
+  localStorage.setItem('fartybird_leaderboard', JSON.stringify(top10));
+  return top10;
+}
+
+function displayLeaderboard() {
+  const leaderboard = getLeaderboard();
+  const tbody = document.getElementById('leaderboard-body');
+  if (!tbody) return;
+  
+  tbody.innerHTML = leaderboard.map((entry, i) => {
+    let rankClass = '';
+    if (i === 0) rankClass = 'gold';
+    else if (i === 1) rankClass = 'silver';
+    else if (i === 2) rankClass = 'bronze';
+    return '<tr class="' + rankClass + '"><td>' + (i + 1) + '</td><td>' + entry.name + '</td><td>' + entry.score + '</td></tr>';
+  }).join('');
+}
+
+
+
 const bird = {
   x: 150,
   y: 150,
@@ -1471,8 +2063,8 @@ const bird = {
   h: 45,
   radius: 16,
 
-  gravity: 0.25,
-  jump: 4.6,
+  gravity: 0.2,  // Will be set by difficulty
+  jump: 4.2,  // Will be set by difficulty
   speed: 0,
   rotation: 0,
 
@@ -1507,7 +2099,7 @@ const bird = {
         this.y = this.radius;
         if (state.current === state.game) {
           state.current = state.over;
-          playHit();
+          playDeathSound();
         }
       }
       
@@ -1516,7 +2108,7 @@ const bird = {
         this.y = canvas.height - assets.fg.h - this.radius;
         if (state.current === state.game) {
           state.current = state.over;
-          playHit();
+          playDeathSound();
         }
       }
       
@@ -1531,10 +2123,10 @@ const bird = {
 
 // Skyscrapers Object (replaces pipes)
   const pipes = {
-    gap: 175,
+    gap: 200,  // Will be set by difficulty
     maxYPos: 250,
     minYPos: 100,
-    dx: 2,
+    dx: 1.5,  // Will be set by difficulty
     position: [],
 
     // Building color palettes - more variety for city at night
@@ -1669,7 +2261,7 @@ const bird = {
     update: function() {
       if (state.current !== state.game) return;
 
-      if (frames % 100 === 0) {
+      if (frames % spawnRate === 0) {
         // Randomize the Y position of the gap between minYPos and maxYPos
         // This represents the bottom of the top building
         let gapY = this.minYPos + Math.random() * (this.maxYPos - this.minYPos);
@@ -1700,7 +2292,7 @@ const bird = {
         if (bird.x + bird.radius > p.x && bird.x - bird.radius < p.x + 52 &&
             (bird.y - bird.radius < p.y || bird.y + bird.radius > p.y + this.gap)) {
           state.current = state.over;
-          playHit();
+          playDeathSound();
         }
 
         // Score
@@ -1775,6 +2367,7 @@ restartBtn.addEventListener('click', function(e) {
 
 // Game Functions
 function startGame() {
+  applyDifficulty();
   state.current = state.game;
   startScreen.classList.add('hidden');
   scoreEl.classList.remove('hidden');
@@ -1811,6 +2404,24 @@ function gameOver() {
   }
   
   highScoreEl.textContent = 'Best: ' + score.best;
+  
+  // Show name input and leaderboard
+  const nameContainer = document.getElementById('name-input-container');
+  const nameInput = document.getElementById('player-name');
+  if (nameContainer) {
+    nameContainer.style.display = 'block';
+    if (nameInput) nameInput.value = '';
+  }
+  displayLeaderboard();
+  
+  // Show name input and leaderboard
+  const nameContainer = document.getElementById('name-input-container');
+  const nameInput = document.getElementById('player-name');
+  if (nameContainer) {
+    nameContainer.style.display = 'block';
+    if (nameInput) nameInput.value = '';
+  }
+  displayLeaderboard();
 }
 
 // Game Loop
@@ -1854,6 +2465,83 @@ function initCharacterPreviews() {
 }
 
 // Character selector event handlers
+
+
+// Difficulty selector event handlers
+function setupDifficultySelector() {
+  const diffBtns = document.querySelectorAll('.diff-btn');
+  diffBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      diffBtns.forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      selectedDifficulty = this.dataset.diff;
+      playDifficultySelect();
+    });
+  });
+}
+
+// Apply difficulty settings when game starts
+function applyDifficulty() {
+  const settings = difficultySettings[selectedDifficulty];
+  pipes.gap = settings.gap;
+  pipes.dx = settings.pipeSpeed;
+  spawnRate = settings.spawnRate;
+  bird.gravity = settings.gravity;
+  bird.jump = settings.jump;
+}
+
+// Leaderboard submit handler
+function setupLeaderboard() {
+  const submitBtn = document.getElementById('submit-score-btn');
+  const nameInput = document.getElementById('player-name');
+  const nameContainer = document.getElementById('name-input-container');
+  
+  if (submitBtn && nameInput) {
+    submitBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const name = nameInput.value.trim() || 'AAA';
+      saveToLeaderboard(name, score.value);
+      displayLeaderboard();
+      nameContainer.style.display = 'none';
+    });
+    
+    nameInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        submitBtn.click();
+      }
+    });
+  }
+}
+
+
+
+// Difficulty selector event handlers
+
+
+// Leaderboard submit handler
+function setupLeaderboard() {
+  const submitBtn = document.getElementById('submit-score-btn');
+  const nameInput = document.getElementById('player-name');
+  const nameContainer = document.getElementById('name-input-container');
+  
+  if (submitBtn && nameInput) {
+    submitBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const name = nameInput.value.trim() || 'AAA';
+      saveToLeaderboard(name, score.value);
+      displayLeaderboard();
+      nameContainer.style.display = 'none';
+    });
+    
+    nameInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        submitBtn.click();
+      }
+    });
+  }
+}
+
 function setupCharacterSelector() {
   const charBtns = document.querySelectorAll('.char-btn');
   charBtns.forEach(btn => {
@@ -1865,6 +2553,8 @@ function setupCharacterSelector() {
       this.classList.add('selected');
       // Update selected character
       selectedCharacter = parseInt(this.dataset.char);
+      playSelectChime();
+      playSelectChime();
     });
   });
 }
@@ -1881,6 +2571,12 @@ function init() {
   // Initialize character selector
   initCharacterPreviews();
   setupCharacterSelector();
+  setupDifficultySelector();
+  setupLeaderboard();
+  displayLeaderboard();
+  setupDifficultySelector();
+  setupLeaderboard();
+  displayLeaderboard();
   
   loop();
 }
