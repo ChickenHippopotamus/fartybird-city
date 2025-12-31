@@ -2289,15 +2289,6 @@ function gameOver() {
     if (nameInput) nameInput.value = '';
   }
   displayLeaderboard();
-  
-  // Show name input and leaderboard
-  const nameContainer = document.getElementById('name-input-container');
-  const nameInput = document.getElementById('player-name');
-  if (nameContainer) {
-    nameContainer.style.display = 'block';
-    if (nameInput) nameInput.value = '';
-  }
-  displayLeaderboard();
 }
 
 // Game Loop
@@ -2394,32 +2385,6 @@ function setupLeaderboard() {
 }
 
 
-
-// Difficulty selector event handlers
-
-
-// Leaderboard submit handler
-function setupLeaderboard() {
-  const submitBtn = document.getElementById('submit-score-btn');
-  const nameInput = document.getElementById('player-name');
-  const nameContainer = document.getElementById('name-input-container');
-  
-  if (submitBtn && nameInput) {
-    submitBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const name = nameInput.value.trim() || 'AAA';
-      saveToLeaderboard(name, score.value);
-      displayLeaderboard();
-      nameContainer.style.display = 'none';
-    });
-    
-    nameInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        submitBtn.click();
-      }
-    });
-  }
-}
 
 function setupCharacterSelector() {
   const charBtns = document.querySelectorAll('.char-btn');
