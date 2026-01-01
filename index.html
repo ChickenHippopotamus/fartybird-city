@@ -11,7 +11,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #0a0a1a; /* Dark loading bg */
+    background-color: #0a0a1a;
     font-family: 'Press Start 2P', cursive;
     touch-action: none;
     user-select: none;
@@ -32,7 +32,7 @@
   canvas {
     display: block;
     box-shadow: 0 0 30px rgba(0,0,0,0.8);
-    image-rendering: pixelated; /* Crisp edges */
+    image-rendering: pixelated;
   }
 
   #ui-layer {
@@ -65,19 +65,21 @@
 
   /* SCREENS */
   #start-screen, #game-over-screen {
-    background: rgba(0, 0, 0, 0.85);
-    padding: 30px;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 25px;
     border: 4px solid #f4b41b;
     border-radius: 15px;
     color: white;
     pointer-events: auto;
-    box-shadow: 0 10px 0 rgba(0,0,0,0.5);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
     max-width: 90%;
     min-width: 320px;
+    max-height: 90vh;
+    overflow-y: auto;
   }
 
   h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin: 0 0 15px 0;
     color: #f4b41b;
     text-shadow: 4px 4px 0 #000, -2px -2px 0 #4a2c00;
@@ -86,18 +88,18 @@
   }
 
   p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1.6;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     color: #ddd;
     text-shadow: 1px 1px 0 #000;
   }
 
   .footer-text {
-    margin-top: 25px;
-    font-size: 0.7rem;
+    margin-top: 20px;
+    font-size: 0.6rem;
     color: #888;
-    opacity: 0.8;
+    opacity: 0.9;
     line-height: 1.6;
     border-top: 2px dashed #444;
     padding-top: 15px;
@@ -110,14 +112,12 @@
     color: white;
     padding: 15px 30px;
     font-family: 'Press Start 2P', cursive;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     text-transform: uppercase;
     box-shadow: 0 6px 0 #8a3000;
     transition: transform 0.1s, background 0.2s;
     margin-top: 10px;
-    position: relative;
-    overflow: hidden;
   }
 
   .btn:active {
@@ -131,77 +131,127 @@
 
   /* CHARACTER SELECTOR */
   .character-selector {
-    margin: 20px 0;
-    background: rgba(255,255,255,0.1);
-    padding: 15px;
+    margin: 15px 0;
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
     border-radius: 10px;
   }
 
-  .character-selector label {
-    font-size: 0.8rem;
+  .character-selector label, .difficulty-selector label {
+    font-size: 0.7rem;
     color: #ffcc00;
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     text-shadow: 2px 2px 0 #000;
   }
 
   .character-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 8px;
     max-width: 280px;
     margin: 0 auto;
   }
 
   .char-btn {
-    width: 60px;
-    height: 60px;
-    border: 3px solid #444;
+    width: 50px;
+    height: 50px;
+    border: 2px solid #444;
     border-radius: 8px;
     background: #222;
     cursor: pointer;
     padding: 0;
-    position: relative;
     overflow: hidden;
     transition: all 0.2s;
   }
 
-  .char-btn:hover {
-    border-color: #aaa;
-    transform: translateY(-2px);
-  }
-
   .char-btn.selected {
     border-color: #f4b41b;
-    box-shadow: 0 0 15px #f4b41b, inset 0 0 10px #f4b41b;
+    box-shadow: 0 0 10px #f4b41b;
     background: #332200;
   }
 
-  .char-preview {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
+  .char-preview { width: 100%; height: 100%; display: block; }
 
-  #game-over-stats {
-    font-size: 1.2rem;
-    color: #fff;
-    margin: 20px 0;
-    background: #222;
-    padding: 15px;
-    border-radius: 8px;
+  /* DIFFICULTY */
+  .difficulty-selector { margin: 15px 0; }
+  .difficulty-btns { display: flex; gap: 8px; justify-content: center; }
+  
+  .diff-btn {
+    padding: 8px 12px;
     border: 2px solid #555;
-  }
-
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.5);
+    color: #888;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s;
   }
   
-  .score-val { color: #f4b41b; }
-  .best-val { color: #58d68d; }
+  .diff-btn.selected {
+    border-color: #fff;
+    color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(255,255,255,0.3);
+  }
+  
+  .diff-btn[data-diff="easy"].selected { background: #27ae60; border-color: #2ecc71; }
+  .diff-btn[data-diff="normal"].selected { background: #e67e22; border-color: #f39c12; }
+  .diff-btn[data-diff="hard"].selected { background: #c0392b; border-color: #e74c3c; }
 
+  /* LEADERBOARD & INPUT */
+  #game-over-stats {
+    background: rgba(0,0,0,0.3);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  
+  #input-row {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 15px 0;
+  }
+  
+  #player-name {
+    width: 80px;
+    background: #222;
+    border: 2px solid #555;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    padding: 5px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  
+  #save-btn {
+    background: #27ae60;
+    border: none;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .leaderboard-table {
+    width: 100%;
+    font-size: 0.6rem;
+    border-collapse: collapse;
+    margin-top: 10px;
+    text-align: left;
+  }
+  
+  .leaderboard-table th { color: #888; border-bottom: 1px solid #444; padding: 5px; }
+  .leaderboard-table td { padding: 5px; border-bottom: 1px solid #222; }
+  .rank-1 { color: #f1c40f; } 
+  .rank-2 { color: #bdc3c7; }
+  .rank-3 { color: #cd7f32; }
+
+  /* VISUAL FX */
   #flash-overlay {
     position: absolute;
     top: 0;
@@ -212,7 +262,7 @@
     opacity: 0;
     pointer-events: none;
     z-index: 50;
-    transition: opacity 0.1s ease-out;
+    transition: opacity 0.15s ease-out;
   }
 </style>
 </head>
@@ -226,13 +276,21 @@
     <div id="score-display" class="hidden">0</div>
 
     <div id="start-screen">
-      <h1>FARTY<br>BIRD<br><span style="font-size: 1.2rem; color: #fff;">CITY NIGHTS</span></h1>
+      <h1>FARTY<br>BIRD<br><span style="font-size: 1rem; color: #fff;">CITY NIGHTS</span></h1>
       <p>Tap, Click, or Space<br>to Fart & Fly!</p>
       
       <div class="character-selector">
         <label>SELECT PILOT:</label>
-        <div class="character-grid">
-          </div>
+        <div class="character-grid"></div>
+      </div>
+
+      <div class="difficulty-selector">
+        <label>DIFFICULTY:</label>
+        <div class="difficulty-btns">
+          <button class="diff-btn" data-diff="easy">EASY</button>
+          <button class="diff-btn selected" data-diff="normal">NORMAL</button>
+          <button class="diff-btn" data-diff="hard">HARD</button>
+        </div>
       </div>
 
       <button class="btn" id="start-btn">PLAY</button>
@@ -244,17 +302,26 @@
 
     <div id="game-over-screen" class="hidden">
       <h1>CRASHED!</h1>
+      
       <div id="game-over-stats">
-        <div class="stat-row">
-          <span>SCORE</span>
-          <span class="score-val" id="final-score">0</span>
-        </div>
-        <div class="stat-row">
-          <span>BEST</span>
-          <span class="best-val" id="best-score">0</span>
+        <div>SCORE: <span id="final-score" style="color:#f4b41b">0</span></div>
+        <div style="margin-top:5px; font-size:0.8rem">BEST: <span id="best-score" style="color:#58d68d">0</span></div>
+      </div>
+
+      <div id="input-container">
+        <div id="input-row">
+          <input type="text" id="player-name" maxlength="3" placeholder="AAA">
+          <button id="save-btn">SAVE</button>
         </div>
       </div>
-      <button class="btn" id="restart-btn">RETRY</button>
+
+      <table class="leaderboard-table">
+        <thead><tr><th>#</th><th>NAME</th><th>PTS</th></tr></thead>
+        <tbody id="leaderboard-body"></tbody>
+      </table>
+
+      <button class="btn" id="restart-btn" style="margin-top: 20px;">RETRY</button>
+      
       <div class="footer-text">
         Made with 💨 😂<br>Fart Responsibly
       </div>
@@ -265,12 +332,12 @@
 <script>
 /**
  * FARTY BIRD: CITY NIGHTS (MASTER EDITION)
- * * Optimized Engine | Procedural Audio | Screen Shake | High DPI Support
+ * Refactored for stability, performance, and extra juice.
  */
 
 // --- ENGINE & SETUP ---
 const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d', { alpha: false }); // Optimize for no transparency on base
+const ctx = canvas.getContext('2d', { alpha: false });
 const ui = {
   score: document.getElementById('score-display'),
   start: document.getElementById('start-screen'),
@@ -278,16 +345,19 @@ const ui = {
   finalScore: document.getElementById('final-score'),
   bestScore: document.getElementById('best-score'),
   flash: document.getElementById('flash-overlay'),
-  charGrid: document.querySelector('.character-grid')
+  charGrid: document.querySelector('.character-grid'),
+  leaderboard: document.getElementById('leaderboard-body'),
+  nameInput: document.getElementById('player-name'),
+  saveBtn: document.getElementById('save-btn'),
+  inputContainer: document.getElementById('input-container')
 };
 
-// Responsive Canvas Handling
+// High DPI & Responsive Handling
 let scale = 1;
 function resize() {
   const container = document.getElementById('game-container');
-  const targetRatio = 432 / 768; // Original design ratio
+  const targetRatio = 432 / 768;
   const containerRatio = container.clientWidth / container.clientHeight;
-  
   let finalWidth, finalHeight;
   
   if (containerRatio < targetRatio) {
@@ -298,30 +368,34 @@ function resize() {
     finalWidth = finalHeight * targetRatio;
   }
   
-  // High DPI scaling
   const dpr = window.devicePixelRatio || 1;
   canvas.width = 432 * dpr;
   canvas.height = 768 * dpr;
-  
   canvas.style.width = `${finalWidth}px`;
   canvas.style.height = `${finalHeight}px`;
-  
   ctx.scale(dpr, dpr);
   scale = dpr;
 }
 window.addEventListener('resize', resize);
 resize();
 
-// Game State
+// Game Variables
 const state = { current: 0, getReady: 0, game: 1, over: 2 };
 let frames = 0;
-let gameSpeed = 3;
-let shakeIntensity = 0;
 let score = 0;
 let bestScore = parseInt(localStorage.getItem('fartybird_city_best')) || 0;
 let selectedChar = 0;
+let shakeIntensity = 0;
 
-// --- AUDIO ENGINE (The Heartbeat) ---
+// Settings
+const difficultySettings = {
+  easy: { gravity: 0.22, jump: 4.4, gap: 190, speed: 2.5, spawnRate: 130 },
+  normal: { gravity: 0.25, jump: 4.6, gap: 160, speed: 3.0, spawnRate: 110 },
+  hard: { gravity: 0.30, jump: 5.0, gap: 130, speed: 3.8, spawnRate: 90 }
+};
+let diff = difficultySettings.normal;
+
+// --- AUDIO ENGINE ---
 const audio = {
   ctx: null,
   bgGain: null,
@@ -333,7 +407,6 @@ const audio = {
     if (this.ctx.state === 'suspended') this.ctx.resume();
   },
   setupBgMusic: function() {
-    // Brown Noise Generator (City Hum)
     const bufferSize = this.ctx.sampleRate * 2;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -343,86 +416,59 @@ const audio = {
       lastOut = (lastOut + (0.02 * white)) / 1.02;
       data[i] = lastOut * 3.5;
     }
-    
     const noise = this.ctx.createBufferSource();
     noise.buffer = buffer;
     noise.loop = true;
-    
-    // Lowpass filter for "muffled" city sound
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.value = 400;
-
     this.bgGain = this.ctx.createGain();
     this.bgGain.gain.value = 0.15;
-
-    noise.connect(filter);
-    filter.connect(this.bgGain);
+    noise.connect(filter); filter.connect(this.bgGain);
     this.bgGain.connect(this.ctx.destination);
     noise.start();
-    
-    // Start the Beat
     this.scheduleBeat();
   },
   scheduleBeat: function() {
-    // Simple Lo-Fi Beat Sequencer
     const bpm = 90;
     const stepTime = (60/bpm)/4;
     let step = 0;
-    const kickPattern = [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,1,0];
-    const snrPattern  = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0];
-    const hatPattern  = [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0];
-
+    const kick = [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,1,0];
+    const snr  = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0];
+    const hat  = [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0];
     setInterval(() => {
-        if(this.ctx && this.ctx.state === 'running') {
+        if(this.ctx && this.ctx.state === 'running' && state.current !== state.over) {
             const t = this.ctx.currentTime;
-            if(kickPattern[step]) this.playDrum(t, 150, 40, 0.5, 'sine');
-            if(snrPattern[step])  this.playNoise(t);
-            if(hatPattern[step])  this.playHat(t);
+            if(kick[step]) this.playTone(t, 150, 40, 'sine', 0.5);
+            if(snr[step])  this.playNoise(t, 1000, 0.3);
+            if(hat[step])  this.playNoise(t, 7000, 0.08, 0.03);
             step = (step + 1) % 16;
         }
     }, stepTime * 1000);
   },
-  playDrum: function(t, f1, f2, vol, type) {
+  playTone: function(t, f1, f2, type, vol) {
     const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
+    const g = this.ctx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(f1, t);
     osc.frequency.exponentialRampToValueAtTime(f2, t + 0.1);
-    gain.gain.setValueAtTime(vol, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    osc.connect(gain);
-    gain.connect(this.bgGain);
-    osc.start(t);
-    osc.stop(t + 0.15);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(g); g.connect(this.bgGain);
+    osc.start(t); osc.stop(t+0.15);
   },
-  playNoise: function(t) { // Snare
-    const bSize = this.ctx.sampleRate * 0.1;
-    const b = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
-    const d = b.getChannelData(0);
-    for(let i=0; i<bSize; i++) d[i] = Math.random() * 2 - 1;
-    const src = this.ctx.createBufferSource();
-    src.buffer = b;
-    const g = this.ctx.createGain();
-    const f = this.ctx.createBiquadFilter();
-    f.type = 'highpass'; f.frequency.value = 1000;
-    g.gain.setValueAtTime(0.3, t);
-    g.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
-    src.connect(f); f.connect(g); g.connect(this.bgGain);
-    src.start(t);
-  },
-  playHat: function(t) {
-    const bSize = this.ctx.sampleRate * 0.05;
+  playNoise: function(t, freq, vol, dur=0.1) {
+    const bSize = this.ctx.sampleRate * dur;
     const b = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
     const d = b.getChannelData(0);
     for(let i=0; i<bSize; i++) d[i] = Math.random() * 2 - 1;
     const src = this.ctx.createBufferSource();
     src.buffer = b;
     const f = this.ctx.createBiquadFilter();
-    f.type = 'highpass'; f.frequency.value = 7000;
+    f.type = 'highpass'; f.frequency.value = freq;
     const g = this.ctx.createGain();
-    g.gain.setValueAtTime(0.08, t);
-    g.gain.exponentialRampToValueAtTime(0.01, t + 0.03);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.01, t + dur);
     src.connect(f); f.connect(g); g.connect(this.bgGain);
     src.start(t);
   },
@@ -430,383 +476,250 @@ const audio = {
     if(!this.ctx) return;
     const t = this.ctx.currentTime;
     const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const filter = this.ctx.createBiquadFilter();
+    const g = this.ctx.createGain();
+    const f = this.ctx.createBiquadFilter();
+    const rotOsc = this.ctx.createOscillator();
+    const rotGain = this.ctx.createGain();
+    osc.connect(f); f.connect(g); g.connect(this.ctx.destination);
+    rotOsc.connect(rotGain); rotGain.connect(osc.frequency);
     
-    // FM Synthesis for "Rattle"
-    const rattleOsc = this.ctx.createOscillator();
-    const rattleGain = this.ctx.createGain();
-
-    osc.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
-    rattleOsc.connect(rattleGain); rattleGain.connect(osc.frequency);
-
-    // Randomize
-    const type = Math.random();
-    let dur = 0.3 + Math.random() * 0.4;
-    
-    osc.type = 'sawtooth';
-    rattleOsc.type = 'sawtooth';
-    rattleOsc.frequency.value = 20 + Math.random() * 30; // Rattle speed
-    rattleGain.gain.value = 20 + Math.random() * 20; // Rattle depth
-
-    osc.frequency.setValueAtTime(150 + Math.random()*100, t);
-    osc.frequency.exponentialRampToValueAtTime(40, t + dur);
-
-    filter.type = 'lowpass';
-    filter.Q.value = 5 + Math.random() * 5;
-    filter.frequency.setValueAtTime(800, t);
-    filter.frequency.exponentialRampToValueAtTime(50, t + dur);
-
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.6, t + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + dur);
-
-    rattleOsc.start(t); osc.start(t);
-    rattleOsc.stop(t+dur); osc.stop(t+dur);
+    let dur = 0.3 + Math.random()*0.4;
+    osc.type = 'sawtooth'; rotOsc.type = 'sawtooth';
+    rotOsc.frequency.value = 20 + Math.random()*30;
+    rotGain.gain.value = 20 + Math.random()*20;
+    osc.frequency.setValueAtTime(150+Math.random()*100, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t+dur);
+    f.frequency.setValueAtTime(800, t);
+    f.frequency.exponentialRampToValueAtTime(50, t+dur);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.5, t+0.05);
+    g.gain.exponentialRampToValueAtTime(0.01, t+dur);
+    rotOsc.start(t); osc.start(t);
+    rotOsc.stop(t+dur); osc.stop(t+dur);
   },
-  playSmack: function() {
+  playCrash: function() {
     if(!this.ctx) return;
     const t = this.ctx.currentTime;
+    // Impact Noise
+    this.playNoise(t, 100, 0.8, 0.4);
+    // Sad descent
     const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(150, t);
-    osc.frequency.exponentialRampToValueAtTime(40, t+0.1);
-    gain.gain.setValueAtTime(0.5, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t+0.1);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t+0.1);
+    const g = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(300, t);
+    osc.frequency.linearRampToValueAtTime(50, t+0.5);
+    g.gain.setValueAtTime(0.3, t);
+    g.gain.linearRampToValueAtTime(0, t+0.5);
+    osc.connect(g); g.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t+0.5);
   }
 };
 
-// --- GAME OBJECTS ---
-const background = {
+// --- ENTITIES ---
+
+const bg = {
   stars: [],
   init: function() {
-    for(let i=0; i<80; i++) {
-      this.stars.push({
-        x: Math.random() * 432,
-        y: Math.random() * 600,
-        size: Math.random() * 2 + 0.5,
-        twinkle: Math.random() * Math.PI
-      });
-    }
+    for(let i=0; i<80; i++) this.stars.push({x:Math.random()*432, y:Math.random()*600, s:Math.random()*2+0.5, a:Math.random()});
   },
   draw: function() {
-    // Night Sky
-    const grad = ctx.createLinearGradient(0, 0, 0, 768);
-    grad.addColorStop(0, '#050510');
-    grad.addColorStop(1, '#1a1a2e');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,0,432,768);
-
+    // Gradient
+    const g = ctx.createLinearGradient(0,0,0,768);
+    g.addColorStop(0,'#050510'); g.addColorStop(1,'#1a1a2e');
+    ctx.fillStyle = g; ctx.fillRect(0,0,432,768);
     // Stars
     ctx.fillStyle = '#fff';
     this.stars.forEach(s => {
-      const alpha = 0.5 + Math.sin(frames * 0.05 + s.twinkle) * 0.5;
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-      ctx.fill();
+      ctx.globalAlpha = 0.5 + Math.sin(frames*0.05 + s.a)*0.5;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
     });
     ctx.globalAlpha = 1;
-
     // Moon
-    ctx.fillStyle = '#f5f5dc';
-    ctx.shadowBlur = 40;
-    ctx.shadowColor = 'rgba(255,255,200,0.3)';
-    ctx.beginPath();
-    ctx.arc(350, 100, 40, 0, Math.PI*2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    
-    // Distant City Skyline
+    ctx.fillStyle = '#f5f5dc'; ctx.shadowBlur=40; ctx.shadowColor='rgba(255,255,200,0.3)';
+    ctx.beginPath(); ctx.arc(350,100,40,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+    // Skyline
     ctx.fillStyle = '#111122';
-    for(let i=0; i<432; i+=40) {
-        let h = 50 + Math.sin(i)*30;
-        ctx.fillRect(i, 768-112-h, 42, h);
-    }
+    for(let i=0; i<432; i+=40) ctx.fillRect(i, 768-112-(40+Math.sin(i)*30), 42, 100);
   }
 };
 
-const foreground = {
-  h: 112,
-  x: 0,
+const fg = {
+  h: 112, x: 0,
   draw: function() {
-    // Parallax Move
-    if(state.current === state.game) this.x = (this.x - gameSpeed) % 40;
-    
-    // Sidewalk
-    ctx.fillStyle = '#3a3a3a';
-    ctx.fillRect(0, 768-this.h, 432, this.h);
-    // Road
-    ctx.fillStyle = '#222';
-    ctx.fillRect(0, 768-this.h+15, 432, this.h-15);
-    // Stripes
+    if(state.current === state.game) this.x = (this.x - diff.speed) % 40;
+    ctx.fillStyle = '#3a3a3a'; ctx.fillRect(0, 768-this.h, 432, this.h);
+    ctx.fillStyle = '#222'; ctx.fillRect(0, 768-this.h+15, 432, this.h-15);
     ctx.fillStyle = '#f1c40f';
-    for(let i=this.x; i<432; i+=40) {
-        ctx.fillRect(i, 768-50, 25, 6);
-    }
-    // Top Border
-    ctx.fillStyle = '#555';
-    ctx.fillRect(0, 768-this.h, 432, 5);
+    for(let i=this.x; i<432; i+=40) ctx.fillRect(i, 768-50, 25, 6);
+    ctx.fillStyle = '#555'; ctx.fillRect(0, 768-this.h, 432, 5);
   }
 };
 
 const bird = {
-  x: 120, y: 350, r: 16, v: 0, g: 0.25, jump: 4.6,
+  x: 120, y: 350, r: 16, v: 0,
   draw: function() {
     ctx.save();
     ctx.translate(this.x, this.y);
-    
-    // Rotation logic
     let rot = Math.min(Math.PI/4, Math.max(-Math.PI/4, (this.v * 0.1)));
     if(state.current === state.getReady) rot = 0;
     ctx.rotate(rot);
-
-    // Call specific character draw function
     drawCharacter(selectedChar);
-    
     ctx.restore();
   },
   flap: function() {
-    this.v = -this.jump;
-    particles.spawn(this.x-10, this.y+10);
+    this.v = -diff.jump;
     audio.playFart();
+    // Spawn particles
+    for(let i=0; i<5; i++) {
+      particles.push({
+        x: this.x-10, y: this.y+10,
+        vx: (Math.random()-0.5)*5-2, vy: Math.random()*5,
+        life: 1, c: `rgba(139,69,19,`
+      });
+    }
   },
   update: function() {
     if(state.current === state.getReady) {
-      this.y = 350 + Math.cos(frames * 0.1) * 5;
-      this.v = 0;
+      this.y = 350 + Math.cos(frames*0.1)*5;
     } else {
-      this.v += this.g;
+      this.v += diff.gravity;
       this.y += this.v;
-
-      // Floor/Ceiling Collision
-      if(this.y + this.r >= 768 - foreground.h) {
-        this.y = 768 - foreground.h - this.r;
-        gameOver();
-      }
-      if(this.y - this.r <= 0) {
-          this.y = this.r;
-          gameOver();
-      }
+      if(this.y+this.r >= 768-fg.h) { this.y=768-fg.h-this.r; gameOver(); }
+      if(this.y-this.r <= 0) { this.y=this.r; gameOver(); }
     }
   }
 };
 
 const pipes = {
   items: [],
-  w: 52,
-  gap: 160,
-  dx: 3, // Base speed
-  timer: 0,
   draw: function() {
-    for(let p of this.items) {
-      // Top Building
-      ctx.fillStyle = p.color;
-      ctx.fillRect(p.x, 0, this.w, p.top);
-      // Windows Top
-      ctx.fillStyle = p.winColor;
-      for(let r=0; r<p.top-20; r+=30) ctx.fillRect(p.x+10, r+10, 12, 18);
-      
-      // Bottom Building
-      ctx.fillStyle = p.color;
-      ctx.fillRect(p.x, 768 - foreground.h - p.btm, this.w, p.btm);
-      // Windows Bottom
-      ctx.fillStyle = p.winColor;
-      let startY = 768 - foreground.h - p.btm + 10;
-      for(let r=startY; r<768-foreground.h-10; r+=30) ctx.fillRect(p.x+10, r, 12, 18);
-
-      // Detail lines
+    this.items.forEach(p => {
+      ctx.fillStyle = p.c;
+      ctx.fillRect(p.x, 0, 52, p.top);
+      ctx.fillRect(p.x, 768-fg.h-p.btm, 52, p.btm);
+      // Windows
+      ctx.fillStyle = p.wc;
+      for(let y=10; y<p.top-20; y+=30) ctx.fillRect(p.x+10, y, 12, 18);
+      for(let y=768-fg.h-p.btm+10; y<768-fg.h-10; y+=30) ctx.fillRect(p.x+10, y, 12, 18);
+      // Edge
       ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.fillRect(p.x+this.w-5, 0, 5, p.top);
-      ctx.fillRect(p.x+this.w-5, 768 - foreground.h - p.btm, 5, p.btm);
-    }
+      ctx.fillRect(p.x+48, 0, 4, p.top);
+      ctx.fillRect(p.x+48, 768-fg.h-p.btm, 4, p.btm);
+    });
   },
   update: function() {
-    if(state.current !== state.game) return;
-    
-    // Spawning
-    if(frames % 100 === 0) {
-      const availableSpace = 768 - foreground.h - this.gap;
-      const topHeight = Math.random() * (availableSpace - 100) + 50;
-      const btmHeight = availableSpace - topHeight;
-      
-      // Random Building Colors
-      const colors = ['#444', '#5a3d31', '#2f4f4f', '#36454f'];
-      const wins = ['#87CEEB', '#FFD700', '#FF6347']; // Lit windows
-      
+    if(frames % diff.spawnRate === 0) {
+      const avail = 768 - fg.h - diff.gap;
+      const top = Math.random() * (avail - 100) + 50;
       this.items.push({
-        x: 432,
-        top: topHeight,
-        btm: btmHeight,
-        color: colors[Math.floor(Math.random()*colors.length)],
-        winColor: Math.random() > 0.5 ? '#1a1a1a' : wins[Math.floor(Math.random()*wins.length)], // Some dark, some lit
+        x: 432, top: top, btm: avail - top,
+        c: ['#444','#5a3d31','#2f4f4f'][Math.floor(Math.random()*3)],
+        wc: Math.random()>0.5 ? '#1a1a1a' : '#f1c40f',
         passed: false
       });
     }
-
-    // Moving & Collisions
     for(let i=0; i<this.items.length; i++) {
       let p = this.items[i];
-      p.x -= gameSpeed;
-
-      // Collision Box
-      if(bird.x + bird.r > p.x && bird.x - bird.r < p.x + this.w) {
-        if(bird.y - bird.r < p.top || bird.y + bird.r > 768 - foreground.h - p.btm) {
-          gameOver();
-        }
+      p.x -= diff.speed;
+      // Collision
+      if(bird.x+bird.r > p.x && bird.x-bird.r < p.x+52) {
+        if(bird.y-bird.r < p.top || bird.y+bird.r > 768-fg.h-p.btm) gameOver();
       }
-
       // Score
-      if(p.x + this.w < bird.x && !p.passed) {
-        score++;
-        ui.score.innerText = score;
-        p.passed = true;
-        // Difficulty Ramp: every 5 points speed up slightly
-        if(score % 5 === 0) gameSpeed += 0.2; 
+      if(p.x+52 < bird.x && !p.passed) {
+        score++; p.passed=true; ui.score.innerText=score;
       }
-      
-      // Cleanup
-      if(p.x + this.w < 0) {
-        this.items.shift();
-        i--;
-      }
-    }
-  },
-  reset: function() { this.items = []; this.dx = 3; }
-};
-
-const particles = {
-  arr: [],
-  spawn: function(x, y) {
-    for(let i=0; i<5; i++) {
-      this.arr.push({
-        x: x, y: y,
-        vx: (Math.random()-0.5)*5 - 2,
-        vy: (Math.random())*5,
-        life: 1.0,
-        color: `rgba(100, ${Math.floor(Math.random()*150)+50}, 50,`
-      });
-    }
-  },
-  draw: function() {
-    for(let i=this.arr.length-1; i>=0; i--) {
-      let p = this.arr[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= 0.03;
-      if(p.life <= 0) {
-        this.arr.splice(i, 1);
-        continue;
-      }
-      ctx.fillStyle = p.color + p.life + ')';
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 5*p.life, 0, Math.PI*2);
-      ctx.fill();
+      if(p.x+52 < 0) { this.items.shift(); i--; }
     }
   }
 };
 
-// --- VECTOR DRAWING FUNCTIONS (The Characters) ---
+let particles = [];
+function updateParticles() {
+  for(let i=particles.length-1; i>=0; i--) {
+    let p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.life -= 0.03;
+    if(p.life<=0) particles.splice(i,1);
+    else {
+      ctx.fillStyle = p.c + p.life + ')';
+      ctx.beginPath(); ctx.arc(p.x,p.y,5*p.life,0,Math.PI*2); ctx.fill();
+    }
+  }
+}
+
+// --- DRAW HELPERS ---
 function drawCharacter(id) {
-  // Common Styles
   const eyes = () => {
     ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(6,-8,5,0,Math.PI*2); ctx.fill();
     ctx.fillStyle='#000'; ctx.beginPath(); ctx.arc(8,-8,2,0,Math.PI*2); ctx.fill();
   };
-  const beak = () => {
-    ctx.fillStyle='#e67e22'; ctx.beginPath(); ctx.moveTo(10,-4); ctx.lineTo(20,-2); ctx.lineTo(16,4); ctx.fill();
-  };
+  const beak = () => { ctx.fillStyle='#e67e22'; ctx.beginPath(); ctx.moveTo(10,-4); ctx.lineTo(20,-2); ctx.lineTo(16,4); ctx.fill(); };
   
-  // Character 0: Cool Duck (Cap + Shades)
-  if(id===0) {
-    ctx.fillStyle='#f1c40f'; ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill(); // Head
-    ctx.fillStyle='#333'; ctx.beginPath(); ctx.arc(0,-6,14,Math.PI,0); ctx.fill(); // Cap
-    ctx.fillRect(8,-6,12,4); // Brim
-    beak();
-    ctx.fillStyle='#000'; ctx.fillRect(2,-8,12,4); // Shades
-    ctx.fillStyle='#fff'; ctx.fillRect(4,-7,3,1); // Glint
-  } 
-  // Char 1: Beanie
-  else if(id===1) {
-    ctx.fillStyle='#3498db'; ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#e74c3c'; ctx.beginPath(); ctx.arc(0,-8,13,Math.PI,0); ctx.fill(); // Beanie
-    ctx.beginPath(); ctx.arc(0,-20,4,0,Math.PI*2); ctx.fill(); // Pom
-    eyes(); beak();
-  }
-  // Char 2: Sick/Green
-  else if(id===2) {
-    ctx.fillStyle='#2ecc71'; ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#27ae60'; ctx.beginPath(); ctx.arc(0,-8,14,0,Math.PI*2); ctx.fill(); // Hood
-    ctx.fillStyle='#000'; ctx.beginPath(); ctx.arc(6,-8,5,0,Math.PI*2); ctx.stroke(); // Tired eyes
-    beak();
-    ctx.fillStyle='#85c1e9'; ctx.beginPath(); ctx.arc(18,4,3,0,Math.PI*2); ctx.fill(); // Drool
-  }
-  // Char 3: Bandana
-  else if(id===3) {
+  if(id===0) { // Cool Duck
     ctx.fillStyle='#f1c40f'; ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#e91e63'; ctx.beginPath(); ctx.moveTo(-10,-5); ctx.lineTo(10,-5); ctx.lineTo(0,10); ctx.fill(); // Bandana
-    ctx.fillStyle='#000'; ctx.fillRect(2,-8,12,4); // Shades
+    ctx.fillStyle='#333'; ctx.beginPath(); ctx.arc(0,-6,14,Math.PI,0); ctx.fill();
+    ctx.fillRect(8,-6,12,4); beak();
+    ctx.fillStyle='#000'; ctx.fillRect(2,-8,12,4);
+  } else if(id===1) { // Beanie
+    ctx.fillStyle='#3498db'; ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#e74c3c'; ctx.beginPath(); ctx.arc(0,-8,13,Math.PI,0); ctx.fill();
+    ctx.beginPath(); ctx.arc(0,-20,4,0,Math.PI*2); ctx.fill();
+    eyes(); beak();
+  } else if(id===2) { // Sick
+    ctx.fillStyle='#2ecc71'; ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#27ae60'; ctx.beginPath(); ctx.arc(0,-8,14,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000'; ctx.beginPath(); ctx.arc(6,-8,5,0,Math.PI*2); ctx.stroke();
     beak();
-  }
-  // Fallback / Others as simple colored birds
-  else {
-    const cols = ['#9b59b6', '#e67e22', '#1abc9c', '#34495e'];
+  } else {
+    const cols = ['#9b59b6', '#e67e22', '#1abc9c', '#34495e', '#7dcea0'];
     ctx.fillStyle = cols[id % cols.length];
     ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill();
     eyes(); beak();
   }
-  
-  // Wing (Common)
-  ctx.fillStyle='rgba(0,0,0,0.2)';
-  ctx.beginPath(); ctx.ellipse(-8,4,8,5,0.5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.beginPath(); ctx.ellipse(-8,4,8,5,0.5,0,Math.PI*2); ctx.fill();
 }
 
-// --- CORE FUNCTIONS ---
-
+// --- LOGIC ---
 function init() {
-  // Generate Character Buttons
+  // Init Characters
   ui.charGrid.innerHTML = '';
   for(let i=0; i<8; i++) {
     const btn = document.createElement('button');
-    btn.className = `char-btn ${i===0 ? 'selected' : ''}`;
-    btn.onclick = (e) => {
-        document.querySelectorAll('.char-btn').forEach(b=>b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedChar = i;
-        // Provide visual feedback (shake bird)
-        bird.y -= 5;
-    };
-    
-    // Create mini canvas for preview
+    btn.className = `char-btn ${i===0?'selected':''}`;
     const cvs = document.createElement('canvas');
-    cvs.width = 60; cvs.height = 60;
+    cvs.width=50; cvs.height=50;
     const c = cvs.getContext('2d');
-    c.translate(30, 30);
-    c.scale(1.5, 1.5);
-    // Draw temp bird in preview
-    // We need to temporarily mock global function for preview or just replicate:
-    // Simply using the global context drawing won't work easily here due to state.
-    // Simpler: Draw color representation
-    const colors = ['#f1c40f', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#e67e22', '#1abc9c', '#34495e'];
-    c.fillStyle = colors[i % 8];
-    c.beginPath(); c.arc(0,0,14,0,Math.PI*2); c.fill();
-    c.fillStyle='#fff'; c.beginPath(); c.arc(6,-8,5,0,Math.PI*2); c.fill();
-    c.fillStyle='#000'; c.beginPath(); c.arc(8,-8,2,0,Math.PI*2); c.fill();
-    c.fillStyle='#e67e22'; c.beginPath(); c.moveTo(10,-4); c.lineTo(20,-2); c.lineTo(16,4); c.fill();
+    c.translate(25,25); c.scale(1.2,1.2);
     
+    // Draw preview
+    const tempCtx = ctx; ctx = c; 
+    drawCharacter(i); 
+    ctx = tempCtx;
+
     btn.appendChild(cvs);
+    btn.onclick = () => {
+      document.querySelectorAll('.char-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected'); selectedChar = i; bird.y -= 5;
+    };
     ui.charGrid.appendChild(btn);
   }
   
-  background.init();
+  // Init Difficulty
+  document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      diff = difficultySettings[btn.dataset.diff];
+    }
+  });
+
+  ui.saveBtn.onclick = saveScore;
+  bg.init();
   loop();
 }
 
 function startGame() {
-  audio.init(); // Must happen on user interaction
+  audio.init();
   state.current = state.game;
   ui.start.classList.add('hidden');
   ui.score.classList.remove('hidden');
@@ -816,14 +729,11 @@ function startGame() {
 function gameOver() {
   if(state.current === state.over) return;
   state.current = state.over;
-  audio.playSmack();
-  
-  // Screen Shake & Flash
-  shakeIntensity = 20;
-  ui.flash.style.opacity = '0.8';
+  audio.playCrash();
+  shakeIntensity = 25;
+  ui.flash.style.opacity = '0.9';
   setTimeout(() => ui.flash.style.opacity = '0', 100);
 
-  // High Score Logic
   if(score > bestScore) {
     bestScore = score;
     localStorage.setItem('fartybird_city_best', bestScore);
@@ -831,20 +741,40 @@ function gameOver() {
   
   ui.finalScore.innerText = score;
   ui.bestScore.innerText = bestScore;
+  ui.inputContainer.style.display = 'block';
+  updateLeaderboard();
+  
   ui.score.classList.add('hidden');
   ui.gameOver.classList.remove('hidden');
 }
 
+function saveScore() {
+  const name = ui.nameInput.value.toUpperCase() || 'AAA';
+  const lb = JSON.parse(localStorage.getItem('fartybird_leaderboard') || '[]');
+  lb.push({name, score});
+  lb.sort((a,b)=>b.score-a.score);
+  localStorage.setItem('fartybird_leaderboard', JSON.stringify(lb.slice(0,5)));
+  ui.inputContainer.style.display = 'none';
+  updateLeaderboard();
+}
+
+function updateLeaderboard() {
+  const lb = JSON.parse(localStorage.getItem('fartybird_leaderboard') || '[]');
+  ui.leaderboard.innerHTML = lb.map((e,i) => `
+    <tr>
+      <td class="rank-${i+1}">${i+1}</td>
+      <td>${e.name}</td>
+      <td>${e.score}</td>
+    </tr>`).join('');
+}
+
 function resetGame() {
-  bird.y = 350;
-  bird.v = 0;
-  pipes.reset();
-  score = 0;
-  frames = 0;
-  gameSpeed = 3;
+  bird.y = 350; bird.v = 0;
+  pipes.items = [];
+  particles = [];
+  score = 0; frames = 0;
   ui.score.innerText = '0';
   state.current = state.getReady;
-  
   ui.gameOver.classList.add('hidden');
   ui.start.classList.remove('hidden');
 }
@@ -852,57 +782,41 @@ function resetGame() {
 function loop() {
   // Update
   bird.update();
-  pipes.update();
+  if(state.current === state.game) pipes.update();
   
   // Draw
   ctx.save();
-  
-  // Screen Shake Effect
   if(shakeIntensity > 0) {
-      const dx = (Math.random() - 0.5) * shakeIntensity;
-      const dy = (Math.random() - 0.5) * shakeIntensity;
-      ctx.translate(dx, dy);
-      shakeIntensity *= 0.9;
-      if(shakeIntensity < 0.5) shakeIntensity = 0;
+    ctx.translate((Math.random()-0.5)*shakeIntensity, (Math.random()-0.5)*shakeIntensity);
+    shakeIntensity *= 0.9;
+    if(shakeIntensity < 0.5) shakeIntensity = 0;
   }
-
   ctx.clearRect(0,0,432,768);
   
-  background.draw();
+  bg.draw();
   pipes.draw();
-  foreground.draw();
-  particles.draw();
+  fg.draw();
+  updateParticles();
   bird.draw();
   
   ctx.restore();
-  
   frames++;
   requestAnimationFrame(loop);
 }
 
-// --- INPUTS ---
-window.addEventListener('keydown', e => {
-    if(e.code === 'Space') {
-        if(state.current === state.getReady) startGame();
-        else if(state.current === state.game) bird.flap();
-        else if(state.current === state.over && frames % 60 > 10) resetGame();
-    }
-});
-canvas.addEventListener('mousedown', e => {
-    if(state.current === state.game) bird.flap();
-});
-canvas.addEventListener('touchstart', e => {
-    e.preventDefault(); // Stop scrolling
-    if(state.current === state.game) bird.flap();
-}, {passive: false});
+// Inputs
+window.onkeydown = (e) => {
+  if(e.code==='Space') {
+    if(state.current===state.getReady) startGame();
+    else if(state.current===state.game) bird.flap();
+  }
+};
+canvas.onmousedown = () => { if(state.current===state.game) bird.flap(); };
+canvas.ontouchstart = (e) => { e.preventDefault(); if(state.current===state.game) bird.flap(); };
+document.getElementById('start-btn').onclick = startGame;
+document.getElementById('restart-btn').onclick = resetGame;
 
-// Button Listeners
-document.getElementById('start-btn').addEventListener('click', startGame);
-document.getElementById('restart-btn').addEventListener('click', resetGame);
-
-// Run
 window.onload = init;
-
 </script>
 </body>
 </html>
