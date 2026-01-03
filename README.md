@@ -4,7 +4,7 @@ A hilarious HTML5 where birds fly by farting... through the city at night!
 
 ##  Dedication
 
-This game is dedicated to **Z, 🤴🏽of Farts💨** 
+This game is dedicated to **🇿🤴🏽of Farts💨** 
 
 
 
