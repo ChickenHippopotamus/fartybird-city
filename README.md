@@ -19,40 +19,27 @@ This game is dedicated to **Z🤴🏽of💨**
 
 ##  Features:
 
-###  City Night Theme
+##  City Night Theme
 - **Twinkling stars** and glowing **moon** in the night sky
 - **City silhouette** in the background
 - **Skyscrapers with lit windows**
 - Rooftop details: antennas, water towers, pointed spires
 - **City street** with animated lane markings and manholes
 
-###  Three Difficulty Levels
+##  Three Difficulty Levels
 - **Easy** - Bigger gaps, slower speed, perfect for beginners
 - **Normal** - Balanced challenge
 - **Hard** - Tight gaps, fast buildings, for pros!
 
-###  Global Leaderboard
+##  Global Leaderboard
 - Enter your 3-letter initials (arcade style!)
 - Top 10 scores saved locally
 - Compete for the high score!
 
-###  Audio
+##  Audio
 - **Hip-hop inspired beat** - Looping city vibe background music
 - **6 Random Fart Sound Types** - Tight, Dry, Rolling, Wet, Sticky, Long
 - FM synthesis for realistic flatulence
-
-###  Fart Clouds
-- **Speckled particles** inside each cloud
-- **6 color palettes** - Brown, green, purple, orange, blue, grey
-- Randomized density and particle sizes
-
-##  Technical Details
-- Pure HTML5 Canvas
-- Vanilla JavaScript (no frameworks)
-- Web Audio API for synthesized sounds & music
-- Responsive design
-- LocalStorage for score persistence
-- Single file - no external dependencies!
 
 ##  8 Playable Characters
 1. **Cool Duck** - Yellow duck with cap, shades & leather jacket
@@ -71,6 +58,23 @@ This game is dedicated to **Z🤴🏽of💨**
 4. **The Oops** - Wet, high resonance with bubbling
 5. **The Sticky** - Tearing sound, square wave
 6. **The Long Goodbye** - 2 second slow decay
+
+##  Fart Clouds
+- **Speckled particles** inside each cloud
+- **6 color palettes** - Brown, green, purple, orange, blue, grey
+- Randomized density and particle sizes
+
+---
+
+##  Technical Details
+- Pure HTML5 Canvas
+- Vanilla JavaScript (no frameworks)
+- Web Audio API for synthesized sounds & music
+- Responsive design
+- LocalStorage for score persistence
+- Single file - no external dependencies!
+
+---
 
 ##  Setup
 No setup required! Just:
