@@ -2,7 +2,7 @@
 
 A hilarious HTML5 where birds fly by farting!
 
-This game is dedicated to **🇿🤴🏽of Farts💨** 
+This game is dedicated to **Z🤴🏽of💨** 
 
 ---
 
