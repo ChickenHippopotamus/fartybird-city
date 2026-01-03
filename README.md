@@ -85,6 +85,8 @@ Works in all modern browsers:
 -  Safari
 -  Mobile browsers
 
+---
+
 ##  Why?
 Because fart jokes are timeless and games should be fun! Fart Responsively!
 
