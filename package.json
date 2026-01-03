@@ -1,0 +1,25 @@
+{
+  "name": "fartybird-city",
+  "version": "1.0.0",
+  "description": "A hilarious HTML5 game where birds fly by farting!",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChickenHippopotamus/fartybird-city.git"
+  },
+  "keywords": [
+    "game",
+    "html5",
+    "canvas",
+    "fartybird"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChickenHippopotamus/fartybird-city/issues"
+  },
+  "homepage": "https://github.com/ChickenHippopotamus/fartybird-city#readme"
+}
