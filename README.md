@@ -1,12 +1,8 @@
 #  FartyBird City Night Edition
 
-A hilarious HTML5 where birds fly by farting... through the city at night!
-
-##  Dedication
+A hilarious HTML5 where birds fly by farting!
 
 This game is dedicated to **🇿🤴🏽of Farts💨** 
-
-
 
 ---
 
@@ -18,6 +14,8 @@ This game is dedicated to **🇿🤴🏽of Farts💨**
 4. **Tap**, **Click**, or press **Space** to make the bird fart and fly!
 5. Avoid the skyscrapers
 6. Try to beat your high score!
+   
+---
 
 ##  Features:
 
@@ -56,7 +54,7 @@ This game is dedicated to **🇿🤴🏽of Farts💨**
 - LocalStorage for score persistence
 - Single file - no external dependencies!
 
-###  8 Playable Characters
+##  8 Playable Characters
 1. **Cool Duck** - Yellow duck with cap, shades & leather jacket
 2. **Beanie Bird** - Blue bird with beanie & gold chain
 3. **Chunklyshe Bird** - Green bird laughing with tears
